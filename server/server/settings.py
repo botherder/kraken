@@ -124,4 +124,8 @@ STATICFILES_DIRS = (
 	# os.path.join(BASE_DIR, "static"),
 )
 
-GEOIP_PATH = config('GEOIP_PATH', cast=str),
+geoip = config('GEOIP_PATH', cast=str)
+if type(geoip) == tuple:
+	GEOIP_PATH = geoip[0]
+else:
+	GEOIP_PATH = geoip
