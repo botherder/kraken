@@ -5,7 +5,7 @@ Kraken is a simple cross-platform Yara-based IOC scanner tool that can be built 
 - Scan running executables and memory of running processes with provided Yara rules.
 - Scan executables installed for autorun (leveraging [go-autoruns](https://github.com/botherder/go-autoruns))
 - Report any detection to a remote server provided with a Django-based web interface.
-- Run continuously and periodically check for new autoruns and scan any newly executed process.
+- Run continuously and periodically check for new autoruns and scan any newly executed process. Kraken will store events in a local SQLite3 database and will keep copies of autorun and detected executables.
 
 ## Building
 
