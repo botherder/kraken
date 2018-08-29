@@ -9,7 +9,12 @@ Kraken is a simple Yara-based IOC scanner tool that can be built for Windows, Ma
 
 ## Building
 
-In order to build Kraken you will need to have Go installed on your system. We recommend using Go >= 1.11 in order to leverage the native support for Go Modules.
+In order to build Kraken you will need to have Go installed on your system. We recommend using Go >= 1.11 in order to leverage the native support for Go Modules (if it is not available in your package manager, you can use something like [gvm](https://github.com/moovweb/gvm)).
+
+Firstly download Kraken:
+
+    $ git clone https://github.com/botherder/kraken.git
+    $ cd kraken
 
 Most Go libraries depedencies are available to install through:
 
@@ -88,6 +93,46 @@ Alternatively, `kraken` can also be launched using the following arguments:
 
 Launching `kraken -daemon` will execute a first scan and then run continuously. In *daemon* mode Kraken will monitor any new process creation and scan its binary and memory, as well as check regularly for any new entries registered for autorun. Any detection will be reported back to the configured server along with a regular heartbeat.
 
+## Installing the Web Interface
+
+The web interface is built using Django. You can run it using Python 3, which will require the following dependencies:
+
+    $ sudo apt install python3 python3-dev python3-pip python3-mysqldb
+    $ sudo pip3 install Django python-decouple django-geoip2-extras
+
+To configure your Krakan Django app, instead of modifying `server/settings.py` you can create a file named `.env` inside the `server/` folder with the following content:
+
+    SECRET_KEY=your_secret_key
+    DEBUG=True
+    DB_NAME=kraken
+    DB_USER=user
+    DB_PASSWORD=pass
+    STATIC_ROOT=/home/user/kraken/server/static/
+    GEOIP_PATH=/home/user/geoip/
+
+Change those values appropriately. The `GEOIP_PATH` variable should point to a folder containing [MaxMind GeoLite2 City](https://dev.maxmind.com/geoip/geoip2/geolite2/) database.
+
+If you want to run the server using Gunicorn, you can install it with:
+
+    $ sudo pip3 install gunicorn
+
+You can create a Gunicorn systemd service creating a `kraken.service` file in `/etc/systemd/system` like the following:
+
+    Description=Gunicorn Application Server handling Kraken Servers
+    After=network.target
+
+    [Service]
+    User=user
+    Group=www-data
+    WorkingDirectory=/home/user/kraken/server/
+    ExecStart=/usr/local/bin/gunicorn --workers 3 --bind unix:/home/user/kraken-server.sock server.wsgi:application
+    Restart=always
+
+    [Install]
+    WantedBy=multi-user.target
+
+You can then configure your webserver to proxy requests to the unix socket at `/home/user/kraken-server.sock`.
+
 ## License
 
-Kraken is released under the [GNU General Public License v3.0](LICENSE) and is copyrighted to Claudio Guarnieri.
+Kraken is released under the [GNU General Public License v3.0](LICENSE) and is copyrighted to [Claudio Guarnieri](https://nex.sx).
