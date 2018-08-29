@@ -124,4 +124,4 @@ STATICFILES_DIRS = (
 	# os.path.join(BASE_DIR, "static"),
 )
 
-GEOIP_PATH = config('GEOIP_PATH'),
+GEOIP_PATH = config('GEOIP_PATH', cast=str),
