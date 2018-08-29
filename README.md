@@ -99,12 +99,14 @@ When `kraken` is launched it will look for a configuration file either in the cu
 
 You can override the default settings by creating a file called `config.yaml` in the same directory as the `kraken` binary. The configuration can take the following format:
 
-    machine_id: <value>
-    url_rules: <value>
-    url_register: <value>
-    url_heartbeat: <value>
-    url_detection: <value>
-    url_autorun: <value>
+```yaml
+machine_id: <value>
+url_rules: <value>
+url_register: <value>
+url_heartbeat: <value>
+url_detection: <value>
+url_autorun: <value>
+```
 
 ## Installing the Web Interface
 
