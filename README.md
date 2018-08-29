@@ -1,6 +1,6 @@
 <img src="kraken.png" width="450" />
 
-Kraken is a simple Yara-based IOC scanner tool that can be built for Windows, Mac and Linux. It is primarily intended for incident response, research and ad-hoc detections (*not* for endpoint protection). Following are the core functionalities:
+Kraken is a simple cross-platform Yara-based IOC scanner tool that can be built for Windows, Mac and Linux. It is primarily intended for incident response, research and ad-hoc detections (*not* for endpoint protection). Following are the core functionalities:
 
 - Scan running executables and memory of running processes with provided Yara rules.
 - Scan executables installed for autorun (leveraging [go-autoruns](https://github.com/botherder/go-autoruns))
@@ -56,8 +56,8 @@ Next you need to bootstrap Yara sources and compile them with MingW. The followi
     $ cd ${YARA_SRC}
     $ ./bootstrap.sh
     $ ./configure --host=i686-w64-mingw32 --without-crypto --prefix=${YARA_SRC}/i686-w64-mingw32
-    % make -C ${YARA_SRC}
-    % make -C ${YARA_SRC} install
+    $ make -C ${YARA_SRC}
+    $ make -C ${YARA_SRC} install
 
 Now we can download and build `go-yara` for 32bit using the following command:
 
