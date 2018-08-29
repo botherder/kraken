@@ -117,13 +117,15 @@ The web interface is built using Django. You can run it using Python 3, which wi
 
 To configure your Krakan Django app, instead of modifying `server/settings.py` you can create a file named `.env` inside the `server/` folder with the following content:
 
-    SECRET_KEY=your_secret_key
-    DEBUG=True
-    DB_NAME=kraken
-    DB_USER=user
-    DB_PASSWORD=pass
-    STATIC_ROOT=/home/user/kraken/server/static/
-    GEOIP_PATH=/home/user/geoip/
+```shell
+SECRET_KEY=your_secret_key
+DEBUG=True
+DB_NAME=kraken
+DB_USER=user
+DB_PASSWORD=pass
+STATIC_ROOT=/home/user/kraken/server/static/
+GEOIP_PATH=/home/user/geoip/
+```
 
 Change those values appropriately. The `GEOIP_PATH` variable should point to a folder containing [MaxMind GeoLite2 City](https://dev.maxmind.com/geoip/geoip2/geolite2/) database.
 
