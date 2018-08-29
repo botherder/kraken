@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<h1>Recent Detections</h1>
+{% if detections %}
+<table class="table table-striped table-bordered">
+	<tr>
+		<th>Date</th>
+		<th>Type</th>
+		<th>Signature</th>
+		<th>Process</th>
+		<th>Executable</th>
+	</tr>
+	{% for detection in detections %}
+	<tr>
+		<td>{{detection.date}}</td>
+		<td>{{detection.record_type}}</td>
+		<td>{{detection.signature}}</td>
+		<td>{{detection.image_name}} ({{detection.process_id}})</td>
+		<td>{{detection.image_path}}<br />{{detection.sha256}}</td>
+	</tr>
+	{% endfor %}
+</table>
+{% else %}
+<p>No detections have been recorded yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<title>Agent</title>
+
+		<!-- Bootstrap -->
+		<link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+		<link href="{% static "css/style.css" %}" rel="stylesheet">
+
+		<script src="{% static "js/jquery.min.js" %}"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="#"><img src="{% static "images/logo.png" %}" style="max-height:100%;" /></a>
+				<ul class="nav navbar-nav">
+					<li><a href="/hosts/">Hosts</a></li>
+					<li><a href="/detections/">Detections</a></li>
+					<li style="border-left: 2px solid #3e5871;"><a href="/admin/">Admin</a></li>
+				</ul>
+			</div>
+		</nav>
+		<div class="container-fluid" style="margin-top: 60px;">
+			{% block content %}{% endblock %}
+		</div>
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="{% static "js/bootstrap.min.js" %}"></script>
+	</body>
+</html>
