@@ -93,6 +93,19 @@ Alternatively, `kraken` can also be launched using the following arguments:
 
 Launching `kraken -daemon` will execute a first scan and then run continuously. In *daemon* mode Kraken will monitor any new process creation and scan its binary and memory, as well as check regularly for any new entries registered for autorun. Any detection will be reported back to the configured server along with a regular heartbeat.
 
+### Configuration
+
+When `kraken` is launched it will look for a configuration file either in the current working directory or in the persistent directory (in case it runs in *daemon* mode). If it doesn't find any configuration file it will load the default configuration generated from the values provided at build time (primarily `BACKEND`).
+
+You can override the default settings by creating a file called `config.yaml` in the same directory as the `kraken` binary. The configuration can take the following format:
+
+    machine_id: <value>
+    url_rules: <value>
+    url_register: <value>
+    url_heartbeat: <value>
+    url_detection: <value>
+    url_autorun: <value>
+
 ## Installing the Web Interface
 
 The web interface is built using Django. You can run it using Python 3, which will require the following dependencies:
