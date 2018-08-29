@@ -1,6 +1,6 @@
 <img src="kraken.png" width="450" />
 
-Kraken is a simple cross-platform Yara-based IOC scanner tool that can be built for Windows, Mac and Linux. It is primarily intended for incident response, research and ad-hoc detections (*not* for endpoint protection). Following are the core functionalities:
+Kraken is a simple cross-platform Yara-based IOC scanner tool that can be built for Windows, Mac and Linux. It is primarily intended for incident response, research and ad-hoc detections (*not* for endpoint protection). Following are the core features:
 
 - Scan running executables and memory of running processes with provided Yara rules.
 - Scan executables installed for autorun (leveraging [go-autoruns](https://github.com/botherder/go-autoruns))
