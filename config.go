@@ -85,7 +85,7 @@ func configInit() {
 		err := viper.WriteConfigAs(StorageConfig)
 		if err != nil {
 			log.Fatal("Unable to write a new default configuration to file: ", err.Error())
-		} 
+		}
 		log.Info("New default configuration file written to ", StorageConfig)
 	}
 }

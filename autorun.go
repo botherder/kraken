@@ -68,7 +68,7 @@ func autorunStoreInDatabase(autorun *autoruns.Autorun, wasReported bool) {
 		db.StoreAutorun(autorun, wasReported)
 
 		log.WithFields(log.Fields{
-			"path": autorun.ImagePath, 
+			"path":      autorun.ImagePath,
 			"arguments": autorun.Arguments,
 		}).Debug("New autorun identified and stored in local database!")
 	}
