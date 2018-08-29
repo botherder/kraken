@@ -121,7 +121,7 @@ def heartbeat(request):
 	return JsonResponse({"status": STATUS_SUCCESS, "code": "", "msg": ""})
 
 @csrf_exempt
-def detection(request):
+def detection(request, identifier):
 	if request.method != "POST":
 		return JsonResponse({"status": STATUS_FAIL, "code": ERR_INVALID_METHOD,
 			"msg": CODES[ERR_INVALID_METHOD]})
@@ -130,7 +130,7 @@ def detection(request):
 	body = json.loads(body_unicode)
 
 	try:
-		host = Host.objects.get(identifier=body["identifier"])
+		host = Host.objects.get(identifier=identifier)
 	except Host.DoesNotExist:
 		return JsonResponse({"status": STATUS_FAIL, "code": ERR_NOT_REGISTERED,
 			"msg": CODES[ERR_NOT_REGISTERED]})
@@ -150,7 +150,7 @@ def detection(request):
 	return JsonResponse({"status": STATUS_SUCCESS, "code": "", "msg": ""})
 
 @csrf_exempt
-def autorun(request):
+def autorun(request, identifier):
 	if request.method != "POST":
 		return JsonResponse({"status": STATUS_FAIL, "code": ERR_INVALID_METHOD,
 			"msg": CODES[ERR_INVALID_METHOD]})
@@ -159,7 +159,7 @@ def autorun(request):
 	body = json.loads(body_unicode)
 
 	try:
-		host = Host.objects.get(identifier=body["identifier"])
+		host = Host.objects.get(identifier=identifier)
 	except Host.DoesNotExist:
 		return JsonResponse({"status": STATUS_FAIL, "code": ERR_NOT_REGISTERED,
 			"msg": CODES[ERR_NOT_REGISTERED]})
