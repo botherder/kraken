@@ -35,7 +35,6 @@ type Config struct {
 	URLToAutorun   string
 }
 
-
 // This is our configuration.
 var config Config
 

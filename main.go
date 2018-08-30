@@ -27,13 +27,17 @@ import (
 
 // This is our Yara scanner.
 var scanner Scanner
+
 // This is a flag to determine whether to execute as a permanent agent or not.
 // In case this is false, we just scan active processes and exit.
 var daemon *bool
+
 // This is a flag to enable remote reporting to API server.
 var report *bool
+
 // This is a flag to enable debug logging.
 var debug *bool
+
 // This is a domain to the backend specified from command-line.
 var customBaseDomain *string
 
