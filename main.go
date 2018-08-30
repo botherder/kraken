@@ -49,6 +49,7 @@ func initArguments() {
 	flag.Parse()
 
 	// If we're running in daemon mode, we enable the report flag too.
+	// TODO: Need to review this choice. We might not necessarily want that.
 	if *daemon == true {
 		*report = true
 	}
