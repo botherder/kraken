@@ -19,10 +19,12 @@ package main
 import (
 	"fmt"
 	"github.com/hillu/go-yara"
-	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 )
+
+// var compiler *yara.Compiler
 
 func main() {
 	// The argument is the path to the rule or a folder containing rules.
@@ -34,38 +36,37 @@ func main() {
 	}
 
 	// Instantiate the Yara compiler.
-	compiler, _ := yara.NewCompiler()
+	compiler, err := yara.NewCompiler()
+	if err != nil {
+		panic(err)
+	}
 
 	rulesStat, _ := os.Stat(rulesPath)
-
 	switch mode := rulesStat.Mode(); {
 	// Check if the path is a folder...
 	case mode.IsDir():
 		fmt.Println("[rules-compiler] The specified path is a folder, looping through files...")
-
-		// Loop through all the files in the directory (it is not recursive).
-		files, _ := ioutil.ReadDir(rulesPath)
-		for _, fileObj := range files {
+		err = filepath.Walk(rulesPath, func(filePath string, fileObj os.FileInfo, err error) error {
 			// Get the file name.
 			fileName := fileObj.Name()
 
 			// Check if the file has extension .yar or .yara.
 			if (path.Ext(fileName) == ".yar") || (path.Ext(fileName) == ".yara") {
-				// Get the path to the file.
-				filePath := path.Join(rulesPath, fileName)
-
 				fmt.Println("[rules-compiler] Adding rule", filePath)
 
 				// Open the rule file and add it to the Yara compiler.
 				rulesObj, _ := os.Open(filePath)
+				defer rulesObj.Close()
 				compiler.AddFile(rulesObj, "")
 			}
-		}
+			return nil
+		})
 	// Check if it is a file instead...
 	case mode.IsRegular():
 		fmt.Println("[rules-compiler] Compiling Yara rule", rulesPath)
 		// Open the rule file and add it to the Yara compiler.
 		rulesObj, _ := os.Open(rulesPath)
+		defer rulesObj.Close()
 		compiler.AddFile(rulesObj, "")
 	}
 
