@@ -27,6 +27,7 @@ import (
 // Config contains all the information for reporting back.
 type Config struct {
 	MachineID      string
+	URLBaseDomain  string
 	URLToRules     string
 	URLToRegister  string
 	URLToHeartbeat string
@@ -34,10 +35,20 @@ type Config struct {
 	URLToAutorun   string
 }
 
-// This is our configuration file.
+
+// This is our configuration.
 var config Config
 
-func configInit() {
+func initConfig() {
+	var baseDomain string
+	if *customBaseDomain != "" {
+		log.Debug("I was provided a custom backend: ", *customBaseDomain)
+		baseDomain = *customBaseDomain
+	} else {
+		log.Debug("I am going to use the default backend: ", DefaultBaseDomain)
+		baseDomain = DefaultBaseDomain
+	}
+
 	// Get folder and file name of standard config file.
 	fileName := filepath.Base(StorageConfig)
 
@@ -57,26 +68,16 @@ func configInit() {
 
 	// Just in case there is no config file, we set defaults.
 	viper.SetDefault("machine_id", getMachineID())
-	viper.SetDefault("url_rules", URLToRules)
-	viper.SetDefault("url_register", URLToRegister)
-	viper.SetDefault("url_heartbeat", URLToHeartbeat)
-	viper.SetDefault("url_detection", URLToDetection)
-	viper.SetDefault("url_autorun", URLToAutorun)
+	viper.SetDefault("base_domain", baseDomain)
 
 	// Save configuration values to our Config instance.
 	config.MachineID = viper.GetString("machine_id")
-	config.URLToRules = viper.GetString("url_rules")
-	config.URLToRegister = viper.GetString("url_register")
-	config.URLToHeartbeat = viper.GetString("url_heartbeat")
-	config.URLToDetection = fmt.Sprintf("%s%s/", viper.GetString("url_detection"), config.MachineID)
-	config.URLToAutorun = fmt.Sprintf("%s%s/", viper.GetString("url_autorun"), config.MachineID)
-
-	log.Info("This machine is identified as ", config.MachineID)
-	log.Debug("URLBaseDomain: ", URLBaseDomain)
-	log.Debug("URLToRules: ", config.URLToRules)
-	log.Debug("URLToRegister: ", config.URLToRegister)
-	log.Debug("URLToDetection: ", config.URLToDetection)
-	log.Debug("URLToAutorun: ", config.URLToAutorun)
+	config.URLBaseDomain = viper.GetString("base_domain")
+	config.URLToRules = fmt.Sprintf("https://%s/rules", viper.GetString("base_domain"))
+	config.URLToRegister = fmt.Sprintf("https://%s/api/register/", viper.GetString("base_domain"))
+	config.URLToHeartbeat = fmt.Sprintf("https://%s/api/heartbeat/", viper.GetString("base_domain"))
+	config.URLToDetection = fmt.Sprintf("https://%s/api/detection/%s/", viper.GetString("base_domain"), viper.GetString("machine_id"))
+	config.URLToAutorun = fmt.Sprintf("https://%s/api/autorun/%s/", viper.GetString("base_domain"), viper.GetString("machine_id"))
 
 	// Write a new config file if none was found.
 	// We actually write it to disk only if we're running in daemon mode.

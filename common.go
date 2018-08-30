@@ -16,27 +16,7 @@
 
 package main
 
-import (
-	"fmt"
-)
-
 // AgentVersion is the... current version of the agent.
 const AgentVersion = "1.0"
 
-// URLBaseDomain points to the domain name used to compose all backend URLs.
-var URLBaseDomain string = ""
-
-// URLToRules is the URL where the agent will download the rules file.
-var URLToRules string = fmt.Sprintf("https://%s/rules", URLBaseDomain)
-
-// URLToRegister is the URL where the agent will register.
-var URLToRegister = fmt.Sprintf("https://%s/api/register/", URLBaseDomain)
-
-// URLToHeartbeat is the URL where the agent will beacon to.
-var URLToHeartbeat = fmt.Sprintf("https://%s/api/heartbeat/", URLBaseDomain)
-
-// URLToDetection is the URL where the agent reports any detections.
-var URLToDetection = fmt.Sprintf("https://%s/api/detection/", URLBaseDomain)
-
-// URLToAutorun is the URL where the agent reports any autoruns.
-var URLToAutorun = fmt.Sprintf("https://%s/api/autorun/", URLBaseDomain)
+var DefaultBaseDomain string = ""

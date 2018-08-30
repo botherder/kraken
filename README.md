@@ -94,6 +94,8 @@ Once the binaries are compiled you will have a `kraken-launcher` and an `kraken`
 
 Alternatively, `kraken` can also be launched using the following arguments:
 
+    -backend string
+        Specify a particular hostname to the backend to connect to (overrides the default)
     -daemon
         Enable daemon mode (this will also enable the report flag)
     -report
@@ -101,23 +103,24 @@ Alternatively, `kraken` can also be launched using the following arguments:
     -debug
         Enable debug logs
 
+Using `kraken -backend example.com` will override the default `BACKEND` that was provided during build time.
 
 Launching `kraken -daemon` will execute a first scan and then run continuously. In *daemon* mode Kraken will monitor any new process creation and scan its binary and memory, as well as check regularly for any new entries registered for autorun. Any detection will be reported back to the configured server along with a regular heartbeat.
 
 ### Configuration
 
-When `kraken` is launched it will look for a configuration file either in the current working directory or in the persistent directory (in case it runs in *daemon* mode). If it doesn't find any configuration file it will load the default configuration generated from the values provided at build time (primarily `BACKEND`).
+When `kraken` is launched in *daemon* mode it will look for a configuration file either in the current working directory or in the persistent directory. This configuration file is moslty used to lookup the hostname of the backend Kraken will have to connect to. If a configuration file does not exist, it will create one using the default parameters provided during build time (primarily `BACKEND`).
 
-You can override the default settings by creating a file called `config.yaml` in the same directory as the `kraken` binary. The configuration can take the following format:
+If `kraken` is launched in normal mode, it will still look for any configuration file, but it will not write one to disk in case there isn't any. If no configuration file is found, it will use the default parameters provided provided during build time (again, `BACKEND`).
+
+To provide it different parameters you can either create a `config.yaml` file in the same directory as the `kraken` binary using the followiing format:
 
 ```yaml
-machine_id: <value>
-url_rules: <value>
-url_register: <value>
-url_heartbeat: <value>
-url_detection: <value>
-url_autorun: <value>
+base_domain: <value>
 ```
+
+Or you can also specify a custom backend from the command line using `kraken -backend example.com`.
+
 
 ## Installing the Web Interface
 

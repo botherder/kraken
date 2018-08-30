@@ -27,16 +27,28 @@ import (
 
 // This is our Yara scanner.
 var scanner Scanner
-
 // This is a flag to determine whether to execute as a permanent agent or not.
 // In case this is false, we just scan active processes and exit.
 var daemon *bool
-
 // This is a flag to enable remote reporting to API server.
 var report *bool
-
 // This is a flag to enable debug logging.
 var debug *bool
+// This is a domain to the backend specified from command-line.
+var customBaseDomain *string
+
+func initArguments() {
+	customBaseDomain = flag.String("backend", "", "Specify a particular hostname to the backend to connect to (overrides the default)")
+	daemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
+	report = flag.Bool("report", false, "Enable reporting of events to the backend")
+	debug = flag.Bool("debug", false, "Enable debug logs")
+	flag.Parse()
+
+	// If we're running in daemon mode, we enable the report flag too.
+	if *daemon == true {
+		*report = true
+	}
+}
 
 func initLogging() {
 	log.SetFormatter(&log.TextFormatter{ForceColors: true})
@@ -47,22 +59,7 @@ func initLogging() {
 	}
 }
 
-// This function contains just the preliminary actions.
-func prepare() {
-	// Parse command-line arguments.
-	daemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
-	report = flag.Bool("report", false, "Enable reporting of events to the backend")
-	debug = flag.Bool("debug", false, "Enable debug logs")
-	flag.Parse()
-
-	// If we're running in daemon mode, we enable the report flag too.
-	if *daemon == true {
-		*report = true
-	}
-
-	// Initialize debugging.
-	initLogging()
-
+func initStorage() {
 	// We create the folder only if we're running in daemon mode.
 	if *daemon == true {
 		// This should create StorageBase and StorageFiles.
@@ -70,11 +67,30 @@ func prepare() {
 			os.MkdirAll(StorageFiles, 0777)
 		}
 	}
+}
+
+// This function contains just the preliminary actions.
+func prepare() {
+	// Parse arguments.
+	initArguments()
+
+	// Initialize debugging.
+	initLogging()
+
+	// Initialize storage.
+	initStorage()
 
 	// Initialize configuration.
-	configInit()
+	initConfig()
 
-	// We send the registration only if report is enabled.
+	log.Info("This machine is identified as ", config.MachineID)
+	log.Debug("URLBaseDomain: ", config.URLBaseDomain)
+	log.Debug("URLToRules: ", config.URLToRules)
+	log.Debug("URLToRegister: ", config.URLToRegister)
+	log.Debug("URLToDetection: ", config.URLToDetection)
+	log.Debug("URLToAutorun: ", config.URLToAutorun)
+
+	// We register to the backend only if report is enabled.
 	if *report == true {
 		// Register to the API server.
 		err := apiRegister()
@@ -93,6 +109,8 @@ func prepare() {
 func main() {
 	// Initialize a bunch of things.
 	prepare()
+
+	return
 
 	// Initialize the Yara scanner.
 	log.Info("Initializing Yara scanner...")
