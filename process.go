@@ -31,7 +31,7 @@ func processTerminate(pid int32) bool {
 	return err == nil
 }
 
-func processDetected(pid int32, processName string, processPath string, signature string) *Detection {
+func processDetected(pid int32, processName, processPath, signature string) *Detection {
 	log.WithFields(log.Fields{
 		"process": processName,
 		"pid":     pid,
@@ -51,6 +51,7 @@ func processDetected(pid int32, processName string, processPath string, signatur
 	// If we're running in daemon mode, we store results locally.
 	if *daemon == true {
 		detection.Store(wasReported)
+		detection.Backup()
 	}
 
 	return detection

@@ -19,6 +19,8 @@ package main
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-files"
+	"os"
+	"path/filepath"
 )
 
 // Detection contains the information to report a Yara detection.
@@ -83,6 +85,23 @@ func (d *Detection) Store(wasReported bool) error {
 	}
 
 	log.Info("Detection stored in database!")
+
+	return nil
+}
+
+// Backup will keep a copy
+func (d *Detection) Backup() error {
+	if _, err := os.Stat(d.ImagePath); err != nil {
+		return err
+	}
+
+	dstPath := filepath.Join(StorageFiles, d.SHA1)
+	if _, err := os.Stat(dstPath); os.IsNotExist(err) {
+		err = files.Copy(d.ImagePath, dstPath)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
