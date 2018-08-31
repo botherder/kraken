@@ -26,14 +26,11 @@ Once the binaries are compiled you will have a `kraken-launcher` and an `kraken`
 
 Alternatively, `kraken` can also be launched using the following arguments:
 
-    -backend string
-        Specify a particular hostname to the backend to connect to (overrides the default)
-    -daemon
-        Enable daemon mode (this will also enable the report flag)
-    -report
-        Enable reporting of events to the backend
-    -debug
-        Enable debug logs
+    Usage of kraken:
+          --backend string   Specify a particular hostname to the backend to connect to (overrides the default)
+          --daemon           Enable daemon mode (this will also enable the report flag)
+          --debug            Enable debug logs
+          --report           Enable reporting of events to the backend
 
 Using `kraken -backend example.com` will override the default `BACKEND` that was provided during build time.
 

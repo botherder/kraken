@@ -17,11 +17,11 @@
 package main
 
 import (
-	"flag"
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-autoruns"
 	"github.com/mattn/go-colorable"
 	"github.com/shirou/gopsutil/process"
+	flag "github.com/spf13/pflag"
 	"os"
 )
 

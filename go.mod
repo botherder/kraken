@@ -23,7 +23,7 @@ require (
 	github.com/spf13/afero v1.1.1 // indirect
 	github.com/spf13/cast v1.2.0 // indirect
 	github.com/spf13/jwalterweatherman v0.0.0-20180814060501-14d3d4c51834 // indirect
-	github.com/spf13/pflag v1.0.2 // indirect
+	github.com/spf13/pflag v1.0.2
 	github.com/spf13/viper v1.1.0
 	golang.org/x/crypto v0.0.0-20180830192347-182538f80094 // indirect
 	golang.org/x/net v0.0.0-20180826012351-8a410e7b638d // indirect
