@@ -52,7 +52,7 @@ To provide it different parameters you can either create a `config.yaml` file in
 base_domain: <value>
 ```
 
-Or you can also specify a custom backend from the command line using `kraken -backend example.com`.
+Or you can also specify a custom backend from the command line using `kraken --backend example.com`.
 
 
 ## Installing the Web Interface
