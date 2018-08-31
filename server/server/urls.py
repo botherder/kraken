@@ -17,6 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
+	# TODO: need to implement a proper 302 to /hosts/.
 	url(r'^', include('hosts.urls', namespace='hosts')),
 	url(r'^api/', include('api.urls')),
 	url(r'^hosts/', include('hosts.urls')),

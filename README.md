@@ -90,6 +90,11 @@ GEOIP_PATH=/home/user/geoip/
 
 Change those values appropriately. The `GEOIP_PATH` variable should point to a folder containing [MaxMind GeoLite2 City](https://dev.maxmind.com/geoip/geoip2/geolite2/) database.
 
+After having configured the settings in the `.env` file, you will need to initialize the database with:
+
+    $ python3 manage.py makemigrations autoruns detections downloads hosts
+    $ python3 manage.py migrate
+
 If you want to run the server using Gunicorn, you can install it with:
 
     $ sudo pip3 install gunicorn
@@ -147,7 +152,11 @@ While cross-compilation of FreeBSD binaries is not available yet, it is possible
 
     $ sudo pkg install gmake pkgconf go-bindata
 
-Then you will need to install Yara, which is normally available in [ports](https://www.freshports.org/security/yara/). After moving to `/usr/ports/security/yara`, before installing it is recommended that you modify the file `Makefile` to add `--without-crypto` to `CONFIGURE_ARGS`. If you don't need the Yara modules enabled in the Makefile, feel free to remove them. Now you can proceed with installing:
+Then you will need to install Yara, which is normally available in [ports](https://www.freshports.org/security/yara/):
+    
+    $ cd /usr/ports/security/yara
+
+Before installing it, it is recommended that you modify the file `Makefile` to add `--without-crypto` to `CONFIGURE_ARGS` (if you don't need the Yara modules enabled in the Makefile, feel free to remove them). Now you can proceed with installing:
 
     $ sudo make && sudo make install
 
