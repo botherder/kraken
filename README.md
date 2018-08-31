@@ -12,6 +12,21 @@ Some features are still under work or almost completed:
 - Installer and launcher to automatically start Kraken at startup.
 - Download updated Yara rules from the server.
 
+Table of Contents
+=================
+
+      * [Screenshots](#screenshots)
+      * [How to use](#how-to-use)
+         * [Configuration](#configuration)
+      * [Installing the Web Interface](#installing-the-web-interface)
+      * [Building](#building)
+         * [Building on Linux](#building-on-linux)
+         * [Building on FreeBSD](#building-on-freebsd)
+         * [Cross-compiling Windows binaries](#cross-compiling-windows-binaries)
+      * [License](#license)
+
+## Screenshots
+
 ![](graphics/cmd.png)
 
 ![](graphics/linux.png)
@@ -110,7 +125,7 @@ Most Go libraries depedencies are available to install through:
 
     $ make deps
 
-### Building Linux binaries
+### Building on Linux
 
 You need to install Yara development libraries and headers. You should download and compile Yara from the [official sources](https://github.com/VirusTotal/yara). It will require `dh-autoreconf` installed and you will need to configure some compilation flags. This is most likely the procedure you will need to follow:
 
