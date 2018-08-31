@@ -15,15 +15,15 @@ Some features are still under work or almost completed:
 Table of Contents
 =================
 
-      * [Screenshots](#screenshots)
-      * [How to use](#how-to-use)
-         * [Configuration](#configuration)
-      * [Installing the Web Interface](#installing-the-web-interface)
-      * [Building](#building)
-         * [Building on Linux](#building-on-linux)
-         * [Building on FreeBSD](#building-on-freebsd)
-         * [Cross-compiling Windows binaries](#cross-compiling-windows-binaries)
-      * [License](#license)
+* [Screenshots](#screenshots)
+* [How to use](#how-to-use)
+    * [Configuration](#configuration)
+* [Installing the Web Interface](#installing-the-web-interface)
+* [Building](#building)
+    * [Building on Linux](#building-on-linux)
+    * [Building on FreeBSD](#building-on-freebsd)
+    * [Cross-compiling Windows binaries](#cross-compiling-windows-binaries)
+* [License](#license)
 
 ## Screenshots
 
