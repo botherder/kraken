@@ -22,7 +22,7 @@ import (
 )
 
 // AgentFolder is the folder where the executables are stored.
-var AgentFolder = filepath.Join(os.Getenv("ProgramFiles"), "Agent")
+var AgentFolder = filepath.Join(os.Getenv("ProgramFiles"), "Kraken")
 
 // AgentExe is the full location to the agent executable.
-var AgentExe = filepath.Join(AgentFolder, "agent.exe")
+var AgentExe = filepath.Join(AgentFolder, "kraken.exe")

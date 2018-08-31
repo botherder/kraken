@@ -22,7 +22,7 @@ import (
 )
 
 // StorageBase is the path to the storage folder for the data of the agent.
-var StorageBase = filepath.Join(os.Getenv("AppData"), "Agent")
+var StorageBase = filepath.Join(os.Getenv("AppData"), "Kraken")
 
 // StorageFiles is the path to the folder containing all the copied binaries.
 var StorageFiles = filepath.Join(StorageBase, "files")
