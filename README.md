@@ -150,7 +150,7 @@ Compiling Kraken requires to specify a path to a file or a folder that contain t
 
 While cross-compilation of FreeBSD binaries is not available yet, it is possible to build binaries in a native FreeBSD environment. In order to do so you will firstly need to install some packages:
 
-    $ sudo pkg install gmake pkgconf go-bindata
+    $ sudo pkg install git gmake pkgconf go-bindata
 
 Then you will need to install Yara, which is normally available in [ports](https://www.freshports.org/security/yara/):
     
