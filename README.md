@@ -12,8 +12,7 @@ Some features are still under work or almost completed:
 - Installer and launcher to automatically start Kraken at startup.
 - Download updated Yara rules from the server.
 
-Table of Contents
-=================
+## Table of Contents
 
 * [Screenshots](#screenshots)
 * [How to use](#how-to-use)
