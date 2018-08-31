@@ -3,6 +3,7 @@ module github.com/botherder/kraken
 require (
 	github.com/Sirupsen/logrus v1.0.6
 	github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f // indirect
+	github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd // indirect
 	github.com/botherder/go-autoruns v0.0.0-20180624105214-99c642f1ffdd
 	github.com/botherder/go-files v0.0.0-20180205213231-2246e61e05ec
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
