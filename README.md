@@ -32,13 +32,13 @@ Alternatively, `kraken` can also be launched using the following arguments:
           --debug            Enable debug logs
           --report           Enable reporting of events to the backend
 
-Using `kraken -backend example.com` will override the default `BACKEND` that was provided during build time.
+Using `kraken --backend example.com` will override the default `BACKEND` that was provided during build time.
 
-Using `kraken -report` will make Kraken report any autoruns or detections to the configured backend server.
+Using `kraken --report` will make Kraken report any autoruns or detections to the configured backend server.
 
-Launching `kraken -daemon` will execute a first scan and then run continuously. In *daemon* mode Kraken will monitor any new process creation and scan its binary and memory, as well as check regularly for any new entries registered for autorun. Enabling `-daemon` will automatically enable `-report` as well, even when not explicitly specified.
+Launching `kraken --daemon` will execute a first scan and then run continuously. In *daemon* mode Kraken will monitor any new process creation and scan its binary and memory, as well as check regularly for any new entries registered for autorun. Enabling `--daemon` will automatically enable `--report` as well, even when not explicitly specified.
 
-Enabling the `-debug` will only display all debug log messages, mostly including details on files and processes being scanned.
+Enabling the `--debug` will only display all debug log messages, mostly including details on files and processes being scanned.
 
 ### Configuration
 
