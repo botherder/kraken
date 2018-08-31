@@ -30,4 +30,5 @@ require (
 	golang.org/x/text v0.3.0 // indirect
 	gopkg.in/resty.v0 v0.4.1
 	gopkg.in/yaml.v2 v2.2.1 // indirect
+	howett.net/plist v0.0.0-20180609054337-500bd5b9081b // indirect
 )
