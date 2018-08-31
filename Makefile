@@ -2,6 +2,7 @@ BUILD_FOLDER  = $(shell pwd)/build
 
 FLAGS_LINUX   = GOOS=linux GOARCH=amd64
 FLAGS_DARWIN  = GOOS=darwin GOARCH=amd64
+FLAGS_FREEBSD = GOOS=freebsd GOARCH=amd64
 FLAGS_WINDOWS = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1
 
 
@@ -18,6 +19,8 @@ deps:
 
 
 check-env:
+	@mkdir -p $(BUILD_FOLDER)
+
 ifndef RULES
 	$(error You need to specify a RULES file or folder)
 endif
@@ -27,9 +30,7 @@ ifndef BACKEND
 endif
 
 
-linux: check-env
-	@mkdir -p $(BUILD_FOLDER)/linux
-
+rules-compiler:
 	@echo "[builder] Building rules compiler"
 	@cd compiler; go build -o $(BUILD_FOLDER)/compiler; cd ..
 
@@ -39,49 +40,50 @@ linux: check-env
 	@echo "[builder] Launching binary resource builder..."
 	@go-bindata rules
 
+
+linux: check-env rules-compiler
+	@mkdir -p $(BUILD_FOLDER)/linux
+
 	@echo "[builder] Building Linux executable..."
-	@go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
+	@$(FLAGS_LINUX) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
 		-tags yara_static -o $(BUILD_FOLDER)/linux/kraken
 
 	@echo "[builder] Building launcher..."
-	@cd launcher; go build --ldflags '-s -w' -o $(BUILD_FOLDER)/linux/kraken-launcher; cd ..
+	@cd launcher; $(FLAGS_LINUX) go build --ldflags '-s -w' \
+		-o $(BUILD_FOLDER)/linux/kraken-launcher; cd ..
 
 	@echo "[builder] Done!"
 
 
-darwin: check-env
+darwin: check-env rules-compiler
 	@mkdir -p $(BUILD_FOLDER)/darwin
 
-	@echo "[builder] Building rules compiler"
-	@cd compiler; go build -o $(BUILD_FOLDER)/compiler; cd ..
-
-	@echo "[builder] Compiling Yara rules..."
-	@$(BUILD_FOLDER)/compiler $(RULES)
-
-	@echo "[builder] Launching binary resource builder..."
-	@go-bindata rules
-
 	@echo "[builder] Building Darwin executable..."
-	@go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
+	@$(FLAGS_DARWIN) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
 		-tags yara_static -o $(BUILD_FOLDER)/darwin/kraken
 
 	@echo "[builder] Building launcher..."
-	@cd launcher; go build --ldflags '-s -w' -o $(BUILD_FOLDER)/darwin/kraken-launcher; cd ..
+	@cd launcher; $(FLAGS_DARWIN) go build --ldflags '-s -w' \
+		-o $(BUILD_FOLDER)/darwin/kraken-launcher; cd ..
 
 	@echo "[builder] Done!"
 
 
-windows: check-env
+freebsd: check-env rules-compiler
+	@mkdir -p $(BUILD_FOLDER)/freebsd
+
+	@echo "[builder] Building FreeBSD executable..."
+	@$(FLAGS_FREEBSD) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
+		-tags yara_static -o $(BUILD_FOLDER)/freebsd/kraken
+
+	@echo "[builder] Building launcher..."
+	@cd launcher; $(FLAGS_FREEBSD) go build --ldflags '-s -w' -o $(BUILD_FOLDER)/freebsd/kraken-launcher; cd ..
+
+	@echo "[builder] Done!"
+
+
+windows: check-env rules-compiler
 	@mkdir -p $(BUILD_FOLDER)/windows
-
-	@echo "[builder] Building rules compiler"
-	@cd compiler; go build -o $(BUILD_FOLDER)/compiler; cd ..
-
-	@echo "[builder] Compiling Yara rules..."
-	@$(BUILD_FOLDER)/compiler $(RULES)
-
-	@echo "[builder] Launching binary resource builder..."
-	@go-bindata rules
 
 	#@rsrc -manifest kraken.manifest -ico kraken.ico -o rsrc.syso
 	@rsrc -manifest kraken.manifest -o rsrc.syso
