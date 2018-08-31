@@ -17,6 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
+	url(r'^', include('hosts.urls', namespace='hosts')),
 	url(r'^api/', include('api.urls')),
 	url(r'^hosts/', include('hosts.urls')),
 	url(r'^detections/', include('detections.urls')),
