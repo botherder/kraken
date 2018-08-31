@@ -1,7 +1,7 @@
 BUILD_FOLDER  = $(shell pwd)/build
 
 FLAGS_LINUX   = GOOS=linux GOARCH=amd64
-FLAGS_DARWIN  = GOOS=darwin
+FLAGS_DARWIN  = GOOS=darwin GOARCH=amd64
 FLAGS_WINDOWS = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1
 
 
@@ -40,7 +40,8 @@ linux: check-env
 	@go-bindata rules
 
 	@echo "[builder] Building Linux executable..."
-	@go build --ldflags '-s -w -X main.DefaultBaseDomain=$(BACKEND)' -tags yara_static -o $(BUILD_FOLDER)/linux/kraken
+	@go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
+		-tags yara_static -o $(BUILD_FOLDER)/linux/kraken
 
 	@echo "[builder] Building launcher..."
 	@cd launcher; go build --ldflags '-s -w' -o $(BUILD_FOLDER)/linux/kraken-launcher; cd ..
@@ -61,7 +62,8 @@ darwin: check-env
 	@go-bindata rules
 
 	@echo "[builder] Building Darwin executable..."
-	@go build --ldflags '-s -w -X main.DefaultBaseDomain=$(BACKEND)' -o $(BUILD_FOLDER)/darwin/kraken
+	@go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
+		-tags yara_static -o $(BUILD_FOLDER)/darwin/kraken
 
 	@echo "[builder] Building launcher..."
 	@cd launcher; go build --ldflags '-s -w' -o $(BUILD_FOLDER)/darwin/kraken-launcher; cd ..
@@ -85,10 +87,12 @@ windows: check-env
 	@rsrc -manifest kraken.manifest -o rsrc.syso
 
 	@echo "[builder] Building Windows executable..."
-	@$(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' -o $(BUILD_FOLDER)/windows/kraken.exe
+	@$(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
+		-tags yara_static -o $(BUILD_FOLDER)/windows/kraken.exe
 
 	@echo "[builder] Building launcher..."
-	@cd launcher; $(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' -o $(BUILD_FOLDER)/windows/kraken-launcher.exe; cd ..
+	@cd launcher; $(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' \
+		-o $(BUILD_FOLDER)/windows/kraken-launcher.exe; cd ..
 
 	@echo "[builder] Done!"
 
