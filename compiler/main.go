@@ -18,10 +18,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/hillu/go-yara"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/hillu/go-yara"
 )
 
 // var compiler *yara.Compiler

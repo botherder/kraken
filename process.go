@@ -17,10 +17,11 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/shirou/gopsutil/process"
 	"os"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/shirou/gopsutil/process"
 )
 
 // This function should terminate processes on all platforms.

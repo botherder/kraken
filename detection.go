@@ -17,10 +17,11 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/botherder/go-files"
 	"os"
 	"path/filepath"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/botherder/go-files"
 )
 
 // Detection contains the information to report a Yara detection.

@@ -18,9 +18,10 @@ package main
 
 import (
 	"errors"
-	"github.com/hillu/go-yara"
 	"io/ioutil"
 	"os"
+
+	"github.com/hillu/go-yara"
 )
 
 // Scanner is an instance of the Yara scanner.

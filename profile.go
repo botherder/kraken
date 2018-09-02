@@ -18,11 +18,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/botherder/go-files"
-	"github.com/matishsiao/goInfo"
 	"net"
 	"os"
 	"os/user"
+
+	"github.com/botherder/go-files"
+	"github.com/matishsiao/goInfo"
 )
 
 // For a machine ID we use a SHA1 of the first Mac address we find.

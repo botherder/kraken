@@ -17,12 +17,13 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/botherder/go-autoruns"
-	"github.com/botherder/go-files"
 	"os"
 	"path/filepath"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/botherder/go-autoruns"
+	"github.com/botherder/go-files"
 )
 
 func autorunDetected(autorun *autoruns.Autorun, signature string) *Detection {

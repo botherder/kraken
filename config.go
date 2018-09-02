@@ -18,10 +18,11 @@ package main
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/spf13/viper"
 	"path/filepath"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 // Config contains all the information for reporting back.
