@@ -125,7 +125,7 @@ Firstly download Kraken:
     $ git clone https://github.com/botherder/kraken.git
     $ cd kraken
 
-Most Go libraries depedencies are available to install through:
+Most Go libraries dependencies are available to install through:
 
     $ make deps
 
@@ -166,7 +166,7 @@ Now you can move to the directory that contains the Kraken source code and build
 
 ### Cross-compiling Windows binaries
 
-Cross-compiling Windows binaries from a Linux development machine is a slightly more complicated process. Firstly you will need to install MingW and some other depedencies:
+Cross-compiling Windows binaries from a Linux development machine is a slightly more complicated process. Firstly you will need to install MingW and some other dependencies:
 
     $ sudo apt install gcc mingw-w64 automate libtool make
 
