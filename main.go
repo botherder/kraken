@@ -76,7 +76,7 @@ func initStorage() {
 }
 
 // This function contains just the preliminary actions.
-func initAll() {
+func init() {
 	// Parse arguments.
 	initArguments()
 
@@ -113,9 +113,6 @@ func initAll() {
 }
 
 func main() {
-	// Initialize all the things.
-	initAll()
-
 	// Initialize the Yara scanner.
 	log.Info("Initializing Yara scanner...")
 	err := scanner.Init()
