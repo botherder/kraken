@@ -36,24 +36,10 @@ func processDetected(pid int32, processName, processPath, signature string) *Det
 	log.WithFields(log.Fields{
 		"process": processName,
 		"pid":     pid,
-	}).Warning("DETECTION! Malicious process identified as ", signature)
+	}).Warning("DETECTION! Malicious process detected as ", signature)
 
 	detection := NewDetection("process", processPath, processName, signature, pid)
-
-	// If the report flag was enabled, we send the detection to the API server.
-	wasReported := false
-	if *report == true {
-		err := detection.Report()
-		if err == nil {
-			wasReported = true
-		}
-	}
-
-	// If we're running in daemon mode, we store results locally.
-	if *daemon == true {
-		detection.Store(wasReported)
-		detection.Backup()
-	}
+	detection.ReportAndStore()
 
 	return detection
 }
@@ -95,6 +81,8 @@ func processScan(pid int32) *Detection {
 }
 
 func processWatch(oldPids []int32) {
+	log.Info("Starting process monitor...")
+
 	for {
 		// Grab a list of pids.
 		pids, _ := process.Pids()

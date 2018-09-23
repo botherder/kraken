@@ -30,25 +30,10 @@ func autorunDetected(autorun *autoruns.Autorun, signature string) *Detection {
 	log.WithFields(log.Fields{
 		"type":       autorun.Type,
 		"image_path": autorun.ImagePath,
-	}).Warning("DETECTION! Malicious autorun identified as ", signature)
+	}).Warning("DETECTION! Malicious autorun detected as ", signature)
 
 	detection := NewDetection("autorun", autorun.ImagePath, autorun.ImageName, signature, 0)
-
-	// If the report flag was enabled, we send the detection to the API server.
-	wasReported := false
-	if *report == true {
-		err := detection.Report()
-		if err != nil {
-			log.Error("Failed to report malicious autorun:", err.Error())
-		} else {
-			wasReported = true
-		}
-	}
-
-	// Store the detection locally only if running in daemon mode.
-	if *daemon == true {
-		detection.Store(wasReported)
-	}
+	detection.ReportAndStore()
 
 	return detection
 }
@@ -115,6 +100,8 @@ func autorunScan(autorun *autoruns.Autorun) *Detection {
 }
 
 func autorunWatch() {
+	log.Info("Starting autoruns monitor...")
+
 	ticker := time.NewTicker(time.Minute * 30).C
 
 	for {

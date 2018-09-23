@@ -85,8 +85,6 @@ func (d *Detection) Store(wasReported bool) error {
 		return err
 	}
 
-	log.Info("Detection stored in database!")
-
 	return nil
 }
 
@@ -102,6 +100,25 @@ func (d *Detection) Backup() error {
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (d *Detection) ReportAndStore() error {
+	// If the report flag was enabled, we send the detection to the API server.
+	wasReported := false
+	if *report == true {
+		err := d.Report()
+		if err == nil {
+			wasReported = true
+		}
+	}
+
+	// If we're running in daemon mode, we store results locally.
+	if *daemon == true {
+		d.Store(wasReported)
+		d.Backup()
 	}
 
 	return nil

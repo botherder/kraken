@@ -23,6 +23,8 @@ import (
 )
 
 func heartbeatManager() {
+	log.Info("Starting heartbeat...")
+
 	ticker := time.NewTicker(time.Minute * 30).C
 
 	for {
