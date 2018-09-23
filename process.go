@@ -44,7 +44,7 @@ func processDetected(pid int32, processName, processPath, signature string) *Det
 	return detection
 }
 
-func processScan(pid int32) *Detection {
+func processScan(pid int32) (detections []*Detection) {
 	// We check we're not scanning ourselves. That'd be awkward.
 	if os.Getpid() == int(pid) {
 		return nil
@@ -61,9 +61,14 @@ func processScan(pid int32) *Detection {
 			log.Debug("Scanning executable for process ", pid, " at path ", procExe)
 			matches, _ := scanner.ScanFile(procExe)
 			for _, match := range matches {
-				return processDetected(pid, procName, procExe, match.Rule)
+				detections = append(detections, processDetected(pid, procName, procExe, match.Rule))
 			}
 		}
+	}
+
+	// Return already if the process executable was detected.
+	if len(detections) > 0 {
+		return
 	}
 
 	// If we got to this point, then it means that the process executable has
@@ -73,11 +78,11 @@ func processScan(pid int32) *Detection {
 	log.Debug("Scanning memory of process with PID ", pid)
 	matches, _ := scanner.ScanProc(int(pid))
 	for _, match := range matches {
-		return processDetected(pid, procName, procExe, match.Rule)
+		detections = append(detections, processDetected(pid, procName, procExe, match.Rule))
 	}
 
 	// Nothing found for this process.
-	return nil
+	return detections
 }
 
 func processWatch(oldPids []int32) {

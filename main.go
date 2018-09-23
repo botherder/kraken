@@ -136,10 +136,7 @@ func main() {
 		log.Info("Scanning running processes...")
 		pids, _ = process.Pids()
 		for _, pid := range pids {
-			detection := processScan(pid)
-			if detection != nil {
-				detections = append(detections, detection)
-			}
+			detections = append(detections, processScan(pid)...)
 		}
 	}
 
@@ -163,7 +160,7 @@ func main() {
 
 	// Now we tell the results.
 	if len(detections) > 0 {
-		log.Error("Some malicious artifacts have been detected on this system.")
+		log.Error("Some malicious artifacts have been detected on this system:")
 		for _, detection := range detections {
 			log.Error("Found detection for ", detection.Signature)
 		}
