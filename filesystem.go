@@ -19,7 +19,8 @@ func fileDetected(filePath, signature string) *Detection {
 }
 
 func filesystemScan() (detections []*Detection) {
-	root := "/home/nex/projects/"
+	// TODO: Add proper discovery of root.
+	root := "/"
 	filepath.Walk(root, func(filePath string, fileHandle os.FileInfo, err error) error {
 		log.Debug("Scanning file ", filePath)
 		matches, _ := scanner.ScanFile(filePath)
