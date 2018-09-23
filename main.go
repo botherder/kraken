@@ -40,11 +40,17 @@ var (
 	// This is a flag to enable debug logging.
 	debug *bool
 
-	// This is a flag to enable filesystem scanning.
-	filesystem *bool
-
 	// This is a domain to the backend specified from command-line.
 	customBaseDomain *string
+
+	// This is a flag to disable process scanning.
+	noProcessScan *bool
+
+	// This is a flag to disable autorun scanning.
+	noAutorunsScan *bool
+
+	// This is a flag to disable filesystem scanning.
+	noFileSystemScan *bool
 )
 
 func initArguments() {
@@ -52,7 +58,9 @@ func initArguments() {
 	daemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
 	report = flag.Bool("report", false, "Enable reporting of events to the backend")
 	debug = flag.Bool("debug", false, "Enable debug logs")
-	filesystem = flag.Bool("filesystem", false, "Enable scanning of filesystem")
+	noProcessScan = flag.Bool("no-process", false, "Disable scanning of running processes")
+	noAutorunsScan = flag.Bool("no-autoruns", false, "Disable scanning of autoruns")
+	noFileSystemScan = flag.Bool("no-filesystem", false, "Disable scanning of filesystem")
 	flag.Parse()
 
 	// If we're running in daemon mode, we enable the report flag too.
@@ -95,7 +103,7 @@ func init() {
 	// Initialize configuration.
 	initConfig()
 
-	log.Info("This machine is identified as ", config.MachineID)
+	log.Debug("This machine is identified as ", config.MachineID)
 	log.Debug("URLBaseDomain: ", config.URLBaseDomain)
 	log.Debug("URLToRules: ", config.URLToRules)
 	log.Debug("URLToRegister: ", config.URLToRegister)
@@ -131,28 +139,35 @@ func main() {
 	// We store here the list of detections.
 	var detections []*Detection
 
+	// Empty list of pids.
+	var pids []int32
+
 	// We do a first scan of running processes.
-	log.Info("Scanning running processes...")
-	pids, _ := process.Pids()
-	for _, pid := range pids {
-		detection := processScan(pid)
-		if detection != nil {
-			detections = append(detections, detection)
+	if *noProcessScan == false {
+		log.Info("Scanning running processes...")
+		pids, _ = process.Pids()
+		for _, pid := range pids {
+			detection := processScan(pid)
+			if detection != nil {
+				detections = append(detections, detection)
+			}
 		}
 	}
 
 	// We scan the running autoruns.
-	log.Info("Scanning autoruns...")
-	autoruns := autoruns.Autoruns()
-	for _, autorun := range autoruns {
-		detection := autorunScan(autorun)
-		if detection != nil {
-			detections = append(detections, detection)
+	if *noAutorunsScan == false {
+		log.Info("Scanning autoruns...")
+		autoruns := autoruns.Autoruns()
+		for _, autorun := range autoruns {
+			detection := autorunScan(autorun)
+			if detection != nil {
+				detections = append(detections, detection)
+			}
 		}
 	}
 
 	// Now we do a scan of the file system if required.
-	if *filesystem == true {
+	if *noFileSystemScan == false {
 		log.Info("Scanning the filesystem (this can take several minutes)...")
 		detections = append(detections, filesystemScan()...)
 	}
