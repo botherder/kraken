@@ -29,26 +29,19 @@ import (
 var (
 	// This is our Yara scanner.
 	scanner Scanner
-
 	// This is a flag to determine whether to execute as a permanent agent or not.
 	// In case this is false, we just scan active processes and exit.
 	daemon *bool
-
 	// This is a flag to enable remote reporting to API server.
 	report *bool
-
 	// This is a flag to enable debug logging.
 	debug *bool
-
 	// This is a domain to the backend specified from command-line.
 	customBaseDomain *string
-
 	// This is a flag to disable process scanning.
 	noProcessScan *bool
-
 	// This is a flag to disable autorun scanning.
 	noAutorunsScan *bool
-
 	// This is a flag to disable filesystem scanning.
 	noFileSystemScan *bool
 )
@@ -93,13 +86,10 @@ func initStorage() {
 func init() {
 	// Parse arguments.
 	initArguments()
-
 	// Initialize debugging.
 	initLogging()
-
 	// Initialize storage.
 	initStorage()
-
 	// Initialize configuration.
 	initConfig()
 
@@ -138,7 +128,6 @@ func main() {
 
 	// We store here the list of detections.
 	var detections []*Detection
-
 	// Empty list of pids.
 	var pids []int32
 
