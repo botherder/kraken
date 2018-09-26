@@ -35,16 +35,19 @@ func fileDetected(filePath, signature string) *Detection {
 }
 
 func filesystemScan() (detections []*Detection) {
-	root := getFileSystemRoot()
-	filepath.Walk(root, func(filePath string, fileInfo os.FileInfo, err error) error {
-		log.Debug("Scanning file ", filePath)
-		matches, _ := scanner.ScanFile(filePath)
-		for _, match := range matches {
-			detections = append(detections, fileDetected(filePath, match.Rule))
-		}
+	roots := getFileSystemRoots()
 
-		return nil
-	})
+	for _, root := range roots {
+		filepath.Walk(root, func(filePath string, fileInfo os.FileInfo, err error) error {
+			log.Debug("Scanning file ", filePath)
+			matches, _ := scanner.ScanFile(filePath)
+			for _, match := range matches {
+				detections = append(detections, fileDetected(filePath, match.Rule))
+			}
+
+			return nil
+		})
+	}
 
 	return
 }

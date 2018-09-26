@@ -16,6 +16,6 @@
 
 package main
 
-func getFileSystemRoot() string {
-	return "/"
+func getFileSystemRoots() []string {
+	return []string{"/"}
 }
