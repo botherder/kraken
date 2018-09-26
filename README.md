@@ -44,6 +44,10 @@ Alternatively, `kraken` can also be launched using the following arguments:
           --backend string   Specify a particular hostname to the backend to connect to (overrides the default)
           --daemon           Enable daemon mode (this will also enable the report flag)
           --debug            Enable debug logs
+          --folder string    Specify a particular folder to be scanned (overrides the default full filesystem)
+          --no-autoruns      Disable scanning of autoruns
+          --no-filesystem    Disable scanning of filesystem
+          --no-process       Disable scanning of running processes
           --report           Enable reporting of events to the backend
 
 Using `kraken --backend example.com` will override the default `BACKEND` that was provided during build time.
@@ -53,6 +57,10 @@ Using `kraken --report` will make Kraken report any autoruns or detections to th
 Launching `kraken --daemon` will execute a first scan and then run continuously. In *daemon* mode Kraken will monitor any new process creation and scan its binary and memory, as well as check regularly for any new entries registered for autorun. Enabling `--daemon` will automatically enable `--report` as well, even when not explicitly specified.
 
 Enabling the `--debug` will only display all debug log messages, mostly including details on files and processes being scanned.
+
+Using `--no-autoruns`, `--no-filesystem` or `--no-process` will disable the scanning of autoruns, files stored on disk and running processes respectively. Note: these flag do not impact the behavior of kraken when running in daemon mode.
+
+If the filesystem scanning is enabled, kraken will scan recursively the entire root folder (`/` on \*nix systems and any fixed drive mounted on Windows systems). Using `--folder` you can specify a particular folder you want to scan instead.
 
 ### Configuration
 
