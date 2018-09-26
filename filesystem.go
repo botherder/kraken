@@ -35,9 +35,19 @@ func fileDetected(filePath, signature string) *Detection {
 }
 
 func filesystemScan() (detections []*Detection) {
-	roots := getFileSystemRoots()
+	var roots []string
+	if *customFileSystemRoot == "" {
+		roots = getFileSystemRoots()
+	} else {
+		roots = []string{*customFileSystemRoot,}
+	}
 
 	for _, root := range roots {
+		if _, err := os.Stat(root); os.IsNotExist(err) {
+			log.Error("Cannot scan this folder, it does not appear to exist: ", root)
+			continue
+		}
+
 		filepath.Walk(root, func(filePath string, fileInfo os.FileInfo, err error) error {
 			log.Debug("Scanning file ", filePath)
 			matches, _ := scanner.ScanFile(filePath)

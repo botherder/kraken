@@ -29,15 +29,17 @@ import (
 var (
 	// This is our Yara scanner.
 	scanner Scanner
+	// This is a flag to enable debug logging.
+	debug *bool
 	// This is a flag to determine whether to execute as a permanent agent or not.
 	// In case this is false, we just scan active processes and exit.
 	daemon *bool
 	// This is a flag to enable remote reporting to API server.
 	report *bool
-	// This is a flag to enable debug logging.
-	debug *bool
 	// This is a domain to the backend specified from command-line.
 	customBaseDomain *string
+	// This is a folder to be scanned instead of the default.
+	customFileSystemRoot *string
 	// This is a flag to disable process scanning.
 	noProcessScan *bool
 	// This is a flag to disable autorun scanning.
@@ -47,10 +49,11 @@ var (
 )
 
 func initArguments() {
-	customBaseDomain = flag.String("backend", "", "Specify a particular hostname to the backend to connect to (overrides the default)")
-	daemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
-	report = flag.Bool("report", false, "Enable reporting of events to the backend")
 	debug = flag.Bool("debug", false, "Enable debug logs")
+	report = flag.Bool("report", false, "Enable reporting of events to the backend")
+	daemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
+	customBaseDomain = flag.String("backend", "", "Specify a particular hostname to the backend to connect to (overrides the default)")
+	customFileSystemRoot = flag.String("folder", "", "Specify a particular folder to be scanned (overrides the default full filesystem)")
 	noProcessScan = flag.Bool("no-process", false, "Disable scanning of running processes")
 	noAutorunsScan = flag.Bool("no-autoruns", false, "Disable scanning of autoruns")
 	noFileSystemScan = flag.Bool("no-filesystem", false, "Disable scanning of filesystem")
