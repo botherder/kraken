@@ -32,7 +32,8 @@ var (
 func getDrives(bitMap uint32) (drives []string) {
 	driveLetters := []string{
 		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
+		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+	}
 
 	for _, letter := range driveLetters {
 		if bitMap&1 == 1 {
