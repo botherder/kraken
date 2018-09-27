@@ -59,7 +59,7 @@ darwin: check-env rules-compiler
 	@mkdir -p $(BUILD_FOLDER)/darwin
 
 	@echo "[builder] Building Darwin executable..."
-	@$(FLAGS_DARWIN) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
+	@$(FLAGS_DARWIN) go build --ldflags '-s -w -extldflags "-lm" -X main.DefaultBaseDomain=$(BACKEND)' \
 		-tags yara_static -o $(BUILD_FOLDER)/darwin/kraken
 
 	@echo "[builder] Building launcher..."
