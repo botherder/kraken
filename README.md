@@ -5,7 +5,7 @@ Kraken is a simple cross-platform Yara scanner that can be built for Windows, Ma
 - Scan running executables and memory of running processes with provided Yara rules (leveraging [go-yara](https://github.com/hillu/go-yara)).
 - Scan executables installed for autorun (leveraging [go-autoruns](https://github.com/botherder/go-autoruns)).
 - Report any detection to a remote server provided with a Django-based web interface.
-- Run continuously and periodically check for new autoruns and scan any newly executed process. Kraken will store events in a local SQLite3 database and will keep copies of autorun and detected executables.
+- Run continuously and periodically check for new autoruns and scan any newly-executed processes. Kraken will store events in a local SQLite3 database and will keep copies of autorun and detected executables.
 
 Some features are still under work or almost completed:
 
@@ -35,9 +35,9 @@ Some features are still under work or almost completed:
 
 ## How to use
 
-Once the binaries are compiled you will have a `kraken-launcher` and an `kraken` in the appropriate platform build folder.
+Once the binaries are compiled you will have a `kraken-launcher` and a `kraken` in the appropriate platform build folder.
 
-`kraken` can be launched without any argument and it will perform a scan of detected autorun entries and running processes and terminate. It will not communicate any results to any remote server.
+`kraken` can be launched without any arguments and it will perform a scan of detected autorun entries and running processes and terminate. It will not communicate any results to any remote server.
 
 Alternatively, `kraken` can also be launched using the following arguments:
 
@@ -57,26 +57,25 @@ Using `kraken --report` will make Kraken report any autoruns or detections to th
 
 Launching `kraken --daemon` will execute a first scan and then run continuously. In *daemon* mode Kraken will monitor any new process creation and scan its binary and memory, as well as check regularly for any new entries registered for autorun. Enabling `--daemon` will automatically enable `--report` as well, even when not explicitly specified.
 
-Enabling the `--debug` will only display all debug log messages, mostly including details on files and processes being scanned.
+Enabling `--debug` will only display all debug log messages, mostly including details on files and processes being scanned.
 
-Using `--no-autoruns`, `--no-filesystem` or `--no-process` will disable the scanning of autoruns, files stored on disk and running processes respectively. Note: these flag do not impact the behavior of kraken when running in daemon mode.
+Using `--no-autoruns`, `--no-filesystem` or `--no-process` will disable the scanning of autoruns, files stored on disk and running processes, respectively. Note: these flags do not impact the behavior of kraken when running in daemon mode.
 
-If the filesystem scanning is enabled, kraken will scan recursively the entire root folder (`/` on \*nix systems and any fixed drive mounted on Windows systems). Using `--folder` you can specify a particular folder you want to scan instead.
+If filesystem scanning is enabled, Kraken will recursively scan the entire root folder (`/` on \*nix systems and any fixed drive mounted on Windows systems). Using `--folder` you can specify a particular folder you want to scan instead.
 
 ### Configuration
 
-When `kraken` is launched in *daemon* mode it will look for a configuration file either in the current working directory or in the persistent directory. This configuration file is moslty used to lookup the hostname of the backend Kraken will have to connect to. If a configuration file does not exist, it will create one using the default parameters provided during build time (primarily `BACKEND`).
+When `kraken` is launched in *daemon* mode it will look for a configuration file in either the current working directory or in the persistent directory. This configuration file is mostly used to look up the hostname of the backend Kraken will have to connect to. If a configuration file does not exist, it will create one using the default parameters provided during build time (primarily `BACKEND`).
 
-If `kraken` is launched in normal mode, it will still look for any configuration file, but it will not write one to disk in case there isn't any. If no configuration file is found, it will use the default parameters provided provided during build time (again, `BACKEND`).
+If `kraken` is launched in normal mode, it will still look for any configuration file, but it will not write one to disk in the case there isn't one. If no configuration file is found, it will use the default parameters provided provided during build time (again, `BACKEND`).
 
-To provide it different parameters you can either create a `config.yaml` file in the same directory as the `kraken` binary using the followiing format:
+To provide it different parameters you can create a `config.yaml` file in the same directory as the `kraken` binary using the following format:
 
 ```yaml
 base_domain: <value>
 ```
 
-Or you can also specify a custom backend from the command line using `kraken --backend example.com`.
-
+Alternatively, you can specify a custom backend from the command line using `kraken --backend example.com`.
 
 ## Installing the Web Interface
 
@@ -97,7 +96,7 @@ STATIC_ROOT=/home/user/kraken/server/static/
 GEOIP_PATH=/home/user/geoip/
 ```
 
-Change those values appropriately. The `GEOIP_PATH` variable should point to a folder containing [MaxMind GeoLite2 City](https://dev.maxmind.com/geoip/geoip2/geolite2/) database.
+Change those values appropriately. The `GEOIP_PATH` variable should point to a folder containing your [MaxMind GeoLite2 City](https://dev.maxmind.com/geoip/geoip2/geolite2/) database.
 
 After having configured the settings in the `.env` file, you will need to initialize the database with:
 
@@ -108,7 +107,7 @@ If you want to run the server using Gunicorn, you can install it with:
 
     $ sudo pip3 install gunicorn
 
-You can create a Gunicorn systemd service creating a `kraken.service` file in `/etc/systemd/system` like the following:
+You can create a Gunicorn systemd service by creating a `kraken.service` file in `/etc/systemd/system` like the following:
 
     Description=Gunicorn Application Server handling Kraken Servers
     After=network.target
@@ -129,7 +128,7 @@ You can then configure your webserver to proxy requests to the unix socket at `/
 
 In order to build Kraken you will need to have Go installed on your system. We recommend using Go >= 1.11 in order to leverage the native support for Go Modules (if it is not available in your package manager, you can use something like [gvm](https://github.com/moovweb/gvm)).
 
-Firstly download Kraken:
+Firstly, download Kraken:
 
     $ git clone https://github.com/botherder/kraken.git
     $ cd kraken
@@ -140,7 +139,7 @@ Most Go libraries dependencies are available to install through:
 
 ### Building on Linux
 
-You need to install Yara development libraries and headers. You should download and compile Yara from the [official sources](https://github.com/VirusTotal/yara). It will require `dh-autoreconf` installed and you will need to configure some compilation flags. This is most likely the procedure you will need to follow:
+You need to install Yara development libraries and headers. You should download and compile Yara from the [official sources](https://github.com/VirusTotal/yara). It will require `dh-autoreconf` to be installed and you will need to configure some compilation flags. This is most likely the procedure you will need to follow:
 
     $ sudo apt install dh-autoreconf
     $ wget https://github.com/VirusTotal/yara/archive/v3.8.1.tar.gz
@@ -151,7 +150,7 @@ You need to install Yara development libraries and headers. You should download 
     $ make && sudo make install
     $ sudo ldconfig
 
-Compiling Kraken requires to specify a path to a file or a folder that contain the Yara rules you wish to embed with the binary. You can try for example with:
+Compiling Kraken requires you to specify a path to a file or a folder that contains the Yara rules you wish to embed with the binary. You can try for example with:
 
     $ BACKEND=example.com RULES=test/ make linux
 
@@ -162,7 +161,7 @@ While cross-compilation of FreeBSD binaries is not available yet, it is possible
     $ sudo pkg install git gmake pkgconf go-bindata
 
 Then you will need to install Yara, which is normally available in [ports](https://www.freshports.org/security/yara/):
-    
+
     $ cd /usr/ports/security/yara
 
 Before installing it, it is recommended that you modify the file `Makefile` to add `--without-crypto` to `CONFIGURE_ARGS` (if you don't need the Yara modules enabled in the Makefile, feel free to remove them). Now you can proceed with installing:
@@ -189,15 +188,15 @@ Cross-compiling Windows binaries from a Linux development machine is a slightly 
 
     $ sudo apt install gcc mingw-w64 automate libtool make
 
-Next you will need to download Yara sources. Use the latest available version, which at the time of writing is 3.8.1:
+Next you will need to download Yara sources. Use the latest available version, which at the time of this writing is 3.8.1:
 
     $ wget https://github.com/VirusTotal/yara/archive/v3.8.1.tar.gz
 
-Unpack the archive and export `YARA_SRC` to the newly created folder:
+Unpack the archive and export `YARA_SRC` to the newly-created folder:
 
     $ export YARA_SRC=<folder>
 
-Next you need to bootstrap Yara sources and compile them with MingW. The following instructions are to compile it for **32bit**:
+Next you need to bootstrap Yara sources and compile them with MingW. These are the instructions to compile it for **32bit**:
 
     $ cd ${YARA_SRC}
     $ ./bootstrap.sh
