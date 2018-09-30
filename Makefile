@@ -22,23 +22,25 @@ check-env:
 	@mkdir -p $(BUILD_FOLDER)
 
 ifndef RULES
-	$(error You need to specify a RULES file or folder)
+	@echo "[check-env] You have not specified any RULES env, kraken will not have any defult Yara rules."
 endif
 
 ifndef BACKEND
-	$(error You need to specify a BACKEND domain name)
+	@echo "[check-env] You have not specified any BACKEND env, kraken will not have any default backend server configured."
 endif
 
 
 rules-compiler:
-	@echo "[builder] Building rules compiler"
+ifdef RULES
+	@echo "[rules-compiler] Building rules compiler..."
 	@cd compiler; go build -o $(BUILD_FOLDER)/compiler; cd ..
 
-	@echo "[builder] Compiling Yara rules..."
+	@echo "[rules-compiler] Compiling Yara rules..."
 	@$(BUILD_FOLDER)/compiler $(RULES)
 
-	@echo "[builder] Launching binary resource builder..."
+	@echo "[rules-compiler] Launching binary resource builder..."
 	@go-bindata rules
+endif
 
 
 linux: check-env rules-compiler

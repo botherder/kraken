@@ -40,6 +40,8 @@ var (
 	customBaseDomain *string
 	// This is a folder to be scanned instead of the default.
 	customFileSystemRoot *string
+	// This is a file or folder path containing the Yara rules to use.
+	customRulesPath *string
 	// This is a flag to disable process scanning.
 	noProcessScan *bool
 	// This is a flag to disable autorun scanning.
@@ -54,6 +56,7 @@ func initArguments() {
 	daemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
 	customBaseDomain = flag.String("backend", "", "Specify a particular hostname to the backend to connect to (overrides the default)")
 	customFileSystemRoot = flag.String("folder", "", "Specify a particular folder to be scanned (overrides the default full filesystem)")
+	customRulesPath = flag.String("rules", "", "Specify a particular path to a file or folder containing the Yara rules to use")
 	noProcessScan = flag.Bool("no-process", false, "Disable scanning of running processes")
 	noAutorunsScan = flag.Bool("no-autoruns", false, "Disable scanning of autoruns")
 	noFileSystemScan = flag.Bool("no-filesystem", false, "Disable scanning of filesystem")

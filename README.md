@@ -50,6 +50,7 @@ Alternatively, `kraken` can also be launched using the following arguments:
           --no-filesystem    Disable scanning of filesystem
           --no-process       Disable scanning of running processes
           --report           Enable reporting of events to the backend
+          --rules            Specify a particular path to a file or folder containing the Yara rules to use
 
 Using `kraken --backend example.com` will override the default `BACKEND` that was provided during build time.
 
@@ -62,6 +63,14 @@ Enabling `--debug` will only display all debug log messages, mostly including de
 Using `--no-autoruns`, `--no-filesystem` or `--no-process` will disable the scanning of autoruns, files stored on disk and running processes, respectively. Note: these flags do not impact the behavior of kraken when running in daemon mode.
 
 If filesystem scanning is enabled, Kraken will recursively scan the entire root folder (`/` on \*nix systems and any fixed drive mounted on Windows systems). Using `--folder` you can specify a particular folder you want to scan instead.
+
+The `--rules` option allows you to specify a path to a file or folder containing the Yara rules you want to use for your scanning. If the compilation of any of these rules fails (for example, because they include modules that are not enabled in the default Yara library), the execution will be aborted. If no `--rules` option is specified, Kraken will attempt to load a compiled rules file using the following order:
+
+1. It will look for a compiled `rules` file in the current working directory.
+2. It will look for a ocmpiled `rules` file in the local Kraken storage folder, in case it is running in *daemon* mode.
+3. It will attempt to extract the compiled `rules` file from the embedded assets generated at build time (as explained in the [Building](#building) section).
+
+If no compiled `rules` file is found, Kraken's Yara scanner will be disabled and execution will continue without it.
 
 ### Configuration
 

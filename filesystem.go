@@ -39,7 +39,7 @@ func filesystemScan() (detections []*Detection) {
 	if *customFileSystemRoot == "" {
 		roots = getFileSystemRoots()
 	} else {
-		roots = []string{*customFileSystemRoot,}
+		roots = []string{*customFileSystemRoot}
 	}
 
 	for _, root := range roots {

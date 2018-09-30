@@ -32,3 +32,6 @@ var StorageConfig = filepath.Join(StorageBase, "config.yaml")
 
 // StorageDatabase is the path to the local SQLite database.
 var StorageDatabase = filepath.Join(StorageBase, "database.db")
+
+// StorageRules is the path to a stored rules file.
+var StorageRules = filepath.Join(StorageBase, "rules")
