@@ -15,11 +15,9 @@ Some features are still under work or almost completed:
 
 ## Screenshots
 
-![](.gitbook/assets/cmd.png)
+![](graphics/cmd.png)
 
-![](.gitbook/assets/linux.png)
-
-![](.gitbook/assets/windows.png)
+![](graphics/linux.png)
 
 ## How to use
 
