@@ -36,7 +36,7 @@ Launch Kraken with any of the available options:
 
 ## User Guide
 
-For details on install, use and build Kraken you should refer to the [User Guide](https://kraken.gitbook.io/user-guide/). The original source files for the documentation are available [here](https://github.com/botherder/kraken-docs), please open any issue or pull request pertinent to documentation there.
+For details on how to install, use and build Kraken you should refer to the [User Guide](https://kraken.gitbook.io/user-guide/). The original source files for the documentation are available [here](https://github.com/botherder/kraken-docs), please open any issue or pull request pertinent to documentation there.
 
 ## License
 
