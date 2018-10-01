@@ -50,9 +50,9 @@ linux: check-env rules-compiler
 	@$(FLAGS_LINUX) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
 		-tags yara_static -o $(BUILD_FOLDER)/linux/kraken
 
-	@echo "[builder] Building launcher..."
-	@cd launcher; $(FLAGS_LINUX) go build --ldflags '-s -w' \
-		-o $(BUILD_FOLDER)/linux/kraken-launcher; cd ..
+	# @echo "[builder] Building launcher..."
+	# @cd launcher; $(FLAGS_LINUX) go build --ldflags '-s -w' \
+	# 	-o $(BUILD_FOLDER)/linux/kraken-launcher; cd ..
 
 	@echo "[builder] Done!"
 
@@ -64,9 +64,9 @@ darwin: check-env rules-compiler
 	@$(FLAGS_DARWIN) go build --ldflags '-s -w -extldflags "-lm" -X main.DefaultBaseDomain=$(BACKEND)' \
 		-tags yara_static -o $(BUILD_FOLDER)/darwin/kraken
 
-	@echo "[builder] Building launcher..."
-	@cd launcher; $(FLAGS_DARWIN) go build --ldflags '-s -w' \
-		-o $(BUILD_FOLDER)/darwin/kraken-launcher; cd ..
+	# @echo "[builder] Building launcher..."
+	# @cd launcher; $(FLAGS_DARWIN) go build --ldflags '-s -w' \
+	# 	-o $(BUILD_FOLDER)/darwin/kraken-launcher; cd ..
 
 	@echo "[builder] Done!"
 
@@ -78,8 +78,8 @@ freebsd: check-env rules-compiler
 	@$(FLAGS_FREEBSD) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
 		-tags yara_static -o $(BUILD_FOLDER)/freebsd/kraken
 
-	@echo "[builder] Building launcher..."
-	@cd launcher; $(FLAGS_FREEBSD) go build --ldflags '-s -w' -o $(BUILD_FOLDER)/freebsd/kraken-launcher; cd ..
+	# @echo "[builder] Building launcher..."
+	# @cd launcher; $(FLAGS_FREEBSD) go build --ldflags '-s -w' -o $(BUILD_FOLDER)/freebsd/kraken-launcher; cd ..
 
 	@echo "[builder] Done!"
 
@@ -94,9 +94,9 @@ windows: check-env rules-compiler
 	@$(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
 		-tags yara_static -o $(BUILD_FOLDER)/windows/kraken.exe
 
-	@echo "[builder] Building launcher..."
-	@cd launcher; $(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' \
-		-o $(BUILD_FOLDER)/windows/kraken-launcher.exe; cd ..
+	# @echo "[builder] Building launcher..."
+	# @cd launcher; $(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' \
+	# 	-o $(BUILD_FOLDER)/windows/kraken-launcher.exe; cd ..
 
 	@echo "[builder] Done!"
 
