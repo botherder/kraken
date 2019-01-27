@@ -22,7 +22,7 @@ check-env:
 	@mkdir -p $(BUILD_FOLDER)
 
 ifndef RULES
-	@echo "[check-env] You have not specified any RULES env, kraken will not have any defult Yara rules."
+	@echo "[check-env] You have not specified any RULES env, kraken will not have any default Yara rules."
 endif
 
 ifndef BACKEND
