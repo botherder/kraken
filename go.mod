@@ -1,15 +1,17 @@
 module github.com/botherder/kraken
 
+go 1.14
+
 require (
 	github.com/Sirupsen/logrus v1.0.6
 	github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f // indirect
-	github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd // indirect
+	github.com/akavel/rsrc v0.9.0 // indirect
 	github.com/botherder/go-autoruns v0.0.0-20180831105551-328cca05f74b
 	github.com/botherder/go-files v0.0.0-20180205213231-2246e61e05ec
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/go-ole/go-ole v1.2.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hillu/go-yara v1.0.9
+	github.com/hillu/go-yara v1.3.0
 	github.com/magiconair/properties v1.8.0 // indirect
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
 	github.com/mattn/go-colorable v0.0.9

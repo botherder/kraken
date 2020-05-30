@@ -4,6 +4,8 @@ github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f h1:5ZfJxyXo8KyX8
 github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd h1:yumR8733CaQ3P76MFbIbBKdrJmy4EqnQ5DIhqq8gq2Q=
 github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd/go.mod h1:2+aQMrY0hBFBaIr2xxnZ/ctfwnYmMRMbTczYLAC34v4=
+github.com/akavel/rsrc v0.9.0 h1:HwUDC0+tMFWqN4D5G+o5siGD4oVsC3jn6zM8ocjc3nY=
+github.com/akavel/rsrc v0.9.0/go.mod h1:uLoCtb9J+EyAqh+26kdrTgmzRBFPGOolLWKpdxkKq+c=
 github.com/botherder/go-autoruns v0.0.0-20180624105214-99c642f1ffdd h1:CWBFXx9j05s+Zlz1b1jJg8XZd82aOBG8SmNAapoJRYw=
 github.com/botherder/go-autoruns v0.0.0-20180624105214-99c642f1ffdd/go.mod h1:2Bh6W9LAV7FQdaXfYjq9QF5JwC05IQ//S8vTtKin1K0=
 github.com/botherder/go-autoruns v0.0.0-20180831105551-328cca05f74b h1:aLPKpTxvC55MduX8zZ8bSJKUjafY7XiZLMrVCRsxgQE=
@@ -19,6 +21,8 @@ github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
 github.com/hillu/go-yara v1.0.9 h1:t5Dbzt3Oq2HYEPzrbuBiuo+Wlqq/6IhpCHHB14txkrM=
 github.com/hillu/go-yara v1.0.9/go.mod h1:KLxCsvD3F8cgVK866UDHi961qbzP+twKjhNdDsuz/2M=
+github.com/hillu/go-yara v1.3.0 h1:d9HklhWmCY9M/2dnFxYbNXDOFDid3HPGw53hdVk4Urg=
+github.com/hillu/go-yara v1.3.0/go.mod h1:KLxCsvD3F8cgVK866UDHi961qbzP+twKjhNdDsuz/2M=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e h1:Y+GY+bv5vf1gssphFsGiq6R8qdHxnpDZvYljFnXfhD8=
