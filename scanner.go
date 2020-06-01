@@ -152,8 +152,8 @@ func (s *Scanner) Close() {
 }
 
 // ScanFile scans a file path with the provided Yara rules.
-func (s *Scanner) ScanFile(filePath string) ([]yara.MatchRule, error) {
-	var matches []yara.MatchRule
+func (s *Scanner) ScanFile(filePath string) (yara.MatchRules, error) {
+	var matches yara.MatchRules
 
 	// Check if the scanner is initialized correctly.
 	if s.Available == false {
@@ -166,15 +166,18 @@ func (s *Scanner) ScanFile(filePath string) ([]yara.MatchRule, error) {
 	}
 
 	// Scan the file.
-	matches, _ = s.Rules.ScanFile(filePath, 0, 60)
+	err := s.Rules.ScanFile(filePath, 0, 60, &matches)
+	if err != nil {
+		return matches, err
+	}
 
 	// Return any results.
 	return matches, nil
 }
 
 // ScanProc scans a process memory with the provided Yara rules.
-func (s *Scanner) ScanProc(pid int) ([]yara.MatchRule, error) {
-	var matches []yara.MatchRule
+func (s *Scanner) ScanProc(pid int) (yara.MatchRules, error) {
+	var matches yara.MatchRules
 
 	// Check if the scanner is initialized correctly.
 	if s.Available == false {
@@ -182,7 +185,10 @@ func (s *Scanner) ScanProc(pid int) ([]yara.MatchRule, error) {
 	}
 
 	// Scan a process memory.
-	matches, _ = s.Rules.ScanProc(pid, 0, 60)
+	err := s.Rules.ScanProc(pid, 0, 60, &matches)
+	if err != nil {
+		return matches, err
+	}
 
 	// Return any results.
 	return matches, nil
