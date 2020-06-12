@@ -11,7 +11,7 @@ require (
 	github.com/capnspacehook/taskmaster v0.0.0-20190802050140-eebf732b5748 // indirect
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hillu/go-yara v1.2.3-0.20200518212313-9cc0bc27f86c
+	github.com/hillu/go-yara/v4 v4.0.2
 	github.com/magiconair/properties v1.8.0 // indirect
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
 	github.com/mattn/go-colorable v0.0.9

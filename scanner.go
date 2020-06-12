@@ -24,7 +24,7 @@ import (
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/hillu/go-yara"
+	"github.com/hillu/go-yara/v4"
 )
 
 // Scanner is an instance of the Yara scanner.

@@ -22,7 +22,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/hillu/go-yara"
+	"github.com/hillu/go-yara/v4"
 )
 
 // var compiler *yara.Compiler
