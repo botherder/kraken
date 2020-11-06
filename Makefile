@@ -1,4 +1,4 @@
-BUILD_FOLDER  = $(shell pwd)/build
+BUILD_FOLDER  = $(CURDIR)/build
 
 FLAGS_LINUX   = GOOS=linux GOARCH=amd64 CGO_ENABLED=1
 FLAGS_DARWIN  = GOOS=darwin GOARCH=amd64 CGO_ENABLED=1
