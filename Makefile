@@ -3,7 +3,7 @@ BUILD_FOLDER  = $(CURDIR)/build
 FLAGS_LINUX   = GOOS=linux GOARCH=amd64 CGO_ENABLED=1
 FLAGS_DARWIN  = GOOS=darwin GOARCH=amd64 CGO_ENABLED=1
 FLAGS_FREEBSD = GOOS=freebsd GOARCH=amd64 CGO_ENABLED=1
-FLAGS_WINDOWS = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1
+FLAGS_WINDOWS_386 = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1
 
 
 lint:
@@ -84,15 +84,15 @@ freebsd: check-env rules-compiler
 	@echo "[builder] Done!"
 
 
-windows: check-env rules-compiler
-	@mkdir -p $(BUILD_FOLDER)/windows
+windows-386: check-env rules-compiler
+	@mkdir -p $(BUILD_FOLDER)/windows-386
 
 	#@rsrc -manifest kraken.manifest -ico kraken.ico -o rsrc.syso
 	@rsrc -manifest kraken.manifest -o rsrc.syso
 
 	@echo "[builder] Building Windows executable..."
-	@$(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
-		-tags yara_static -o $(BUILD_FOLDER)/windows/kraken.exe
+	@$(FLAGS_WINDOWS_386) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
+		-tags yara_static -o $(BUILD_FOLDER)/windows-386/kraken.exe
 
 	# @echo "[builder] Building launcher..."
 	# @cd launcher; $(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' \
