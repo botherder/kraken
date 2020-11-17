@@ -3,15 +3,49 @@ BUILD_FOLDER  = $(CURDIR)/build
 FLAGS_LINUX   = GOOS=linux GOARCH=amd64 CGO_ENABLED=1
 FLAGS_DARWIN  = GOOS=darwin GOARCH=amd64 CGO_ENABLED=1
 FLAGS_FREEBSD = GOOS=freebsd GOARCH=amd64 CGO_ENABLED=1
-FLAGS_WINDOWS_386 = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1
-FLAGS_WINDOWS_AMD64 = GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1
+FLAGS_WINDOWS_386 = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-386/lib/pkgconfig/
+FLAGS_WINDOWS_AMD64 = GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-amd64/lib/pkgconfig/
 
 KRAKEN_SRC   = $(wildcard *.go)
 LAUNCHER_SRC = $(wildcard launcher/*.go)
 COMPILER_SRC = $(wildcard compiler/*.go)
 
+YARA_VERSION ?= 4.0.2
+YARA_URL = https://github.com/VirusTotal/yara/archive/v$(YARA_VERSION).tar.gz
+YARA_SRC = $(CURDIR)/_non-golang/yara-$(YARA_VERSION)
+
 .PHONY: all
 all: $(shell go env GOOS)
+
+$(YARA_SRC).tar.gz:
+	mkdir -p $(@D)
+	wget -O$@ $(YARA_URL)
+
+.PHONY: yara-src
+yara-src: $(YARA_SRC)/configure
+$(YARA_SRC)/configure: $(YARA_SRC).tar.gz
+	tar -C $(dir $(@D)) -xzf $^
+	cd $(@D) && ./bootstrap.sh
+
+.PHONY: yara-windows-386
+yara-windows-386: $(YARA_SRC)-windows-386/done
+$(YARA_SRC)-windows-386/done: $(YARA_SRC)/configure
+	mkdir -p $(@D)
+	cd $(@D) && \
+		$^ --prefix=$(CURDIR)/_non-golang/prefix-windows-386 --host=i686-w64-mingw32 \
+			 --disable-magic --disable-cuckoo --without-crypto
+	$(MAKE) -C $(@D) install
+	touch $@
+
+.PHONY: yara-windows-amd64
+yara-windows-amd64: $(YARA_SRC)-windows-amd64/done
+$(YARA_SRC)-windows-amd64/done: $(YARA_SRC)/configure
+	mkdir -p $(@D)
+	cd $(@D) && \
+		$^ --prefix=$(CURDIR)/_non-golang/prefix-windows-amd64 --host=x86_64-w64-mingw32 \
+			 --disable-magic --disable-cuckoo --without-crypto
+	$(MAKE) -C $(@D) install
+	touch $@
 
 .PHONY: lint
 lint:
