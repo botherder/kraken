@@ -3,6 +3,8 @@ github.com/Sirupsen/logrus v1.0.6/go.mod h1:rmk17hk6i8ZSAJkSDa7nOxamrG+SP4P0mm+D
 github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f h1:5ZfJxyXo8KyX8DgGXC5B7ILL8y51fci/qYz2B4j8iLY=
 github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/akavel/rsrc v0.9.0/go.mod h1:uLoCtb9J+EyAqh+26kdrTgmzRBFPGOolLWKpdxkKq+c=
+github.com/akavel/rsrc v0.10.1 h1:hCCPImjmFKVNGpeLZyTDRHEFC283DzyTXTo0cO0Rq9o=
+github.com/akavel/rsrc v0.10.1/go.mod h1:uLoCtb9J+EyAqh+26kdrTgmzRBFPGOolLWKpdxkKq+c=
 github.com/botherder/go-autoruns v0.0.0-20200530215510-d8670cf1a229 h1:wO2GKfRH/F/Q4aOAl6BCaGoIDEcHXhW4rNzHMWwrx58=
 github.com/botherder/go-autoruns v0.0.0-20200530215510-d8670cf1a229/go.mod h1:2Bh6W9LAV7FQdaXfYjq9QF5JwC05IQ//S8vTtKin1K0=
 github.com/botherder/go-files v0.0.0-20180205213231-2246e61e05ec h1:6wCpKuh17Jm90ZrOUl+0YO8j6jcL1QvIkB8hr880LOY=

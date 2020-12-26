@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/Sirupsen/logrus v1.0.6
 	github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f // indirect
-	github.com/akavel/rsrc v0.9.0 // indirect
+	github.com/akavel/rsrc v0.10.1 // indirect
 	github.com/botherder/go-autoruns v0.0.0-20200530215510-d8670cf1a229
 	github.com/botherder/go-files v0.0.0-20180205213231-2246e61e05ec
 	github.com/capnspacehook/taskmaster v0.0.0-20190802050140-eebf732b5748 // indirect

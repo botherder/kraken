@@ -19,3 +19,5 @@ rules
 build/
 
 *.env
+
+_non-golang
