@@ -1,23 +1,65 @@
-BUILD_FOLDER  = $(shell pwd)/build
+BUILD_FOLDER  = $(CURDIR)/build
 
 FLAGS_LINUX   = GOOS=linux GOARCH=amd64 CGO_ENABLED=1
 FLAGS_DARWIN  = GOOS=darwin GOARCH=amd64 CGO_ENABLED=1
 FLAGS_FREEBSD = GOOS=freebsd GOARCH=amd64 CGO_ENABLED=1
-FLAGS_WINDOWS = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1
+FLAGS_WINDOWS_386 = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-386/lib/pkgconfig/
+FLAGS_WINDOWS_AMD64 = GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-amd64/lib/pkgconfig/
 
+KRAKEN_SRC   = $(wildcard *.go)
+LAUNCHER_SRC = $(wildcard launcher/*.go)
+COMPILER_SRC = $(wildcard compiler/*.go)
 
+YARA_VERSION ?= 4.0.2
+YARA_URL = https://github.com/VirusTotal/yara/archive/v$(YARA_VERSION).tar.gz
+YARA_SRC = $(CURDIR)/_non-golang/yara-$(YARA_VERSION)
+
+.PHONY: all
+all: $(shell go env GOOS)
+
+$(YARA_SRC).tar.gz:
+	mkdir -p $(@D)
+	wget -O$@ $(YARA_URL)
+
+.PHONY: yara-src
+yara-src: $(YARA_SRC)/configure
+$(YARA_SRC)/configure: $(YARA_SRC).tar.gz
+	tar -C $(dir $(@D)) -xzf $^
+	cd $(@D) && ./bootstrap.sh
+
+.PHONY: yara-windows-386
+yara-windows-386: $(YARA_SRC)-windows-386/done
+$(YARA_SRC)-windows-386/done: $(YARA_SRC)/configure
+	mkdir -p $(@D)
+	cd $(@D) && \
+		$^ --prefix=$(CURDIR)/_non-golang/prefix-windows-386 --host=i686-w64-mingw32 \
+			 --disable-magic --disable-cuckoo --without-crypto
+	$(MAKE) -C $(@D) install
+	touch $@
+
+.PHONY: yara-windows-amd64
+yara-windows-amd64: $(YARA_SRC)-windows-amd64/done
+$(YARA_SRC)-windows-amd64/done: $(YARA_SRC)/configure
+	mkdir -p $(@D)
+	cd $(@D) && \
+		$^ --prefix=$(CURDIR)/_non-golang/prefix-windows-amd64 --host=x86_64-w64-mingw32 \
+			 --disable-magic --disable-cuckoo --without-crypto
+	$(MAKE) -C $(@D) install
+	touch $@
+
+.PHONY: lint
 lint:
 	@echo "[lint] Running linter on codebase"
 	@golint ./...
 
-
+.PHONY: deps
 deps:
 	@echo "[deps] Installing dependencies..."
 	go mod download
 	go get github.com/akavel/rsrc
 	@echo "[deps] Dependencies installed."
 
-
+.PHONY: check-env
 check-env:
 	@mkdir -p $(BUILD_FOLDER)
 
@@ -30,77 +72,120 @@ ifndef BACKEND
 endif
 
 
-rules-compiler:
+.PHONY: rules-compiler
+rules-compiler: $(BUILD_FOLDER)/compiler
+$(BUILD_FOLDER)/compiler: $(COMPILER_SRC)
 ifdef RULES
+	@mkdir -p $(@D)
+
 	@echo "[rules-compiler] Building rules compiler..."
-	@cd compiler; go build -o $(BUILD_FOLDER)/compiler; cd ..
+	@cd compiler; go build -o $@
 
 	@echo "[rules-compiler] Compiling Yara rules..."
-	@$(BUILD_FOLDER)/compiler $(RULES)
+	@$@ $(RULES)
 
 	@echo "[rules-compiler] Launching binary resource builder..."
 	@go-bindata rules
 endif
 
 
-linux: check-env rules-compiler
-	@mkdir -p $(BUILD_FOLDER)/linux
+.PHONY: linux
+linux: $(BUILD_FOLDER)/linux/kraken $(BUILD_FOLDER)/linux/kraken-launcher
 
+$(BUILD_FOLDER)/linux/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
+	@mkdir -p $(@D)
 	@echo "[builder] Building Linux executable..."
 	@$(FLAGS_LINUX) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
-		-tags yara_static -o $(BUILD_FOLDER)/linux/kraken
-
-	# @echo "[builder] Building launcher..."
-	# @cd launcher; $(FLAGS_LINUX) go build --ldflags '-s -w' \
-	# 	-o $(BUILD_FOLDER)/linux/kraken-launcher; cd ..
-
+		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
+$(BUILD_FOLDER)/linux/kraken-launcher: $(LAUNCHER_SRC)
+	@mkdir -p $(@D)
+	@echo "[builder] Building Linux launcher..."
+	@cd launcher; $(FLAGS_LINUX) go build --ldflags '-s -w' \
+		-o $@
+	@echo "[builder] Done!"
 
-darwin: check-env rules-compiler
-	@mkdir -p $(BUILD_FOLDER)/darwin
+.PHONY: darwin
+darwin: $(BUILD_FOLDER)/darwin/kraken $(BUILD_FOLDER)/darwin/kraken-launcher
 
+$(BUILD_FOLDER)/darwin/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
+	@mkdir -p $(@D)
 	@echo "[builder] Building Darwin executable..."
 	@$(FLAGS_DARWIN) go build --ldflags '-s -w -extldflags "-lm" -X main.DefaultBaseDomain=$(BACKEND)' \
-		-tags yara_static -o $(BUILD_FOLDER)/darwin/kraken
-
-	# @echo "[builder] Building launcher..."
-	# @cd launcher; $(FLAGS_DARWIN) go build --ldflags '-s -w' \
-	# 	-o $(BUILD_FOLDER)/darwin/kraken-launcher; cd ..
-
+		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
+$(BUILD_FOLDER)/darwin/kraken-launcher: $(LAUNCHER_SRC)
+	@mkdir -p $(@D)
+	@echo "[builder] Building Darwin launcher..."
+	@cd launcher; $(FLAGS_DARWIN) go build --ldflags '-s -w' \
+		-o $@
+	@echo "[builder] Done!"
 
-freebsd: check-env rules-compiler
-	@mkdir -p $(BUILD_FOLDER)/freebsd
+.PHONY: freebsd
+freebsd: $(BUILD_FOLDER)/freebsd/kraken $(BUILD_FOLDER)/freebsd/kraken-launcher
 
+$(BUILD_FOLDER)/freebsd/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
+	@mkdir -p $(@D)
 	@echo "[builder] Building FreeBSD executable..."
 	@$(FLAGS_FREEBSD) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
-		-tags yara_static -o $(BUILD_FOLDER)/freebsd/kraken
-
-	# @echo "[builder] Building launcher..."
-	# @cd launcher; $(FLAGS_FREEBSD) go build --ldflags '-s -w' -o $(BUILD_FOLDER)/freebsd/kraken-launcher; cd ..
-
+		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
+$(BUILD_FOLDER)/freebsd/kraken-launcher: $(LAUNCHER_SRC)
+	@mkdir -p $(@D)
+	@echo "[builder] Building FreeBSD launcher..."
+	@cd launcher; $(FLAGS_FREEBSD) go build --ldflags '-s -w' }
+		-o $@
+	@echo "[builder] Done!"
 
-windows: check-env rules-compiler
-	@mkdir -p $(BUILD_FOLDER)/windows
+.PHONY: windows
+windows: windows-386 windows-amd64
+
+.PHONY: windows-386
+windows-386: $(BUILD_FOLDER)/windows-386/kraken.exe $(BUILD_FOLDER)/windows-386/kraken-launcher.exe
+
+$(BUILD_FOLDER)/windows-386/kraken.exe: $(BUILD_FOLDER)/compiler $(YARA_SRC)-windows-386/done $(KRAKEN_SRC)
+	@mkdir -p $(@D)
 
 	#@rsrc -manifest kraken.manifest -ico kraken.ico -o rsrc.syso
-	@rsrc -manifest kraken.manifest -o rsrc.syso
+	@rsrc -arch 386 -manifest kraken.manifest -o rsrc_windows_386.syso
 
-	@echo "[builder] Building Windows executable..."
-	@$(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
-		-tags yara_static -o $(BUILD_FOLDER)/windows/kraken.exe
-
-	# @echo "[builder] Building launcher..."
-	# @cd launcher; $(FLAGS_WINDOWS) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' \
-	# 	-o $(BUILD_FOLDER)/windows/kraken-launcher.exe; cd ..
-
+	@echo "[builder] Building Windows 32bit executable..."
+	@$(FLAGS_WINDOWS_386) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
+		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
+$(BUILD_FOLDER)/windows-386/kraken-launcher.exe: $(LAUNCHER_SRC)
+	@mkdir -p $(@D)
+	@echo "[builder] Building Windows 32bit launcher..."
+	@cd launcher; $(FLAGS_WINDOWS_386) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' \
+		-o $@
+	@echo "[builder] Done!"
 
+.PHONY: windows-amd64
+windows-amd64: $(BUILD_FOLDER)/windows-amd64/kraken.exe $(BUILD_FOLDER)/windows-amd64/kraken-launcher.exe
+
+$(BUILD_FOLDER)/windows-amd64/kraken.exe: $(BUILD_FOLDER)/compiler $(YARA_SRC)-windows-amd64/done $(KRAKEN_SRC)
+	@mkdir -p $(@D)
+
+	#@rsrc -manifest kraken.manifest -ico kraken.ico -o rsrc.syso
+	@rsrc -arch amd64 -manifest kraken.manifest -o rsrc_windows_amd64.syso
+
+	@echo "[builder] Building Windows 64bit executable..."
+	@$(FLAGS_WINDOWS_AMD64) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
+		-tags yara_static -o $@
+	@echo "[builder] Done!"
+
+$(BUILD_FOLDER)/windows-amd64/kraken-launcher.exe: $(LAUNCHER_SRC)
+	@mkdir -p $(@D)
+	@echo "[builder] Building Windows 64bit launcher..."
+	@cd launcher; $(FLAGS_WINDOWS_AMD64) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' \
+		-o $@
+	@echo "[builder] Done!"
+
+.PHONY: clean
 clean:
 	rm -f rules
 	rm -f bindata.go
