@@ -17,6 +17,9 @@ YARA_SRC = $(CURDIR)/_non-golang/yara-$(YARA_VERSION)
 .PHONY: all
 all: $(shell go env GOOS)
 
+#==============================================================================
+# Yara-related builds
+#==============================================================================
 $(YARA_SRC).tar.gz:
 	mkdir -p $(@D)
 	wget -O$@ $(YARA_URL)
@@ -47,18 +50,10 @@ $(YARA_SRC)-windows-amd64/done: $(YARA_SRC)/configure
 	$(MAKE) -C $(@D) install
 	touch $@
 
-.PHONY: lint
-lint:
-	@echo "[lint] Running linter on codebase"
-	@golint ./...
 
-.PHONY: deps
-deps:
-	@echo "[deps] Installing dependencies..."
-	go mod download
-	go get github.com/akavel/rsrc
-	@echo "[deps] Dependencies installed."
-
+#==============================================================================
+# Environment
+#==============================================================================
 .PHONY: check-env
 check-env:
 	@mkdir -p $(BUILD_FOLDER)
@@ -72,6 +67,9 @@ ifndef BACKEND
 endif
 
 
+#==============================================================================
+# Rules Compiler
+#==============================================================================
 .PHONY: rules-compiler
 rules-compiler: $(BUILD_FOLDER)/compiler
 $(BUILD_FOLDER)/compiler: $(COMPILER_SRC)
@@ -89,8 +87,11 @@ ifdef RULES
 endif
 
 
+#==============================================================================
+# Linux
+#==============================================================================
 .PHONY: linux
-linux: $(BUILD_FOLDER)/linux/kraken $(BUILD_FOLDER)/linux/kraken-launcher
+linux: check-env rules-compiler $(BUILD_FOLDER)/linux/kraken $(BUILD_FOLDER)/linux/kraken-launcher
 
 $(BUILD_FOLDER)/linux/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
 	@mkdir -p $(@D)
@@ -106,8 +107,12 @@ $(BUILD_FOLDER)/linux/kraken-launcher: $(LAUNCHER_SRC)
 		-o $@
 	@echo "[builder] Done!"
 
+
+#==============================================================================
+# Darwin
+#==============================================================================
 .PHONY: darwin
-darwin: $(BUILD_FOLDER)/darwin/kraken $(BUILD_FOLDER)/darwin/kraken-launcher
+darwin: check-env rules-compiler  $(BUILD_FOLDER)/darwin/kraken $(BUILD_FOLDER)/darwin/kraken-launcher
 
 $(BUILD_FOLDER)/darwin/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
 	@mkdir -p $(@D)
@@ -123,8 +128,12 @@ $(BUILD_FOLDER)/darwin/kraken-launcher: $(LAUNCHER_SRC)
 		-o $@
 	@echo "[builder] Done!"
 
+
+#==============================================================================
+# FreeBSD
+#==============================================================================
 .PHONY: freebsd
-freebsd: $(BUILD_FOLDER)/freebsd/kraken $(BUILD_FOLDER)/freebsd/kraken-launcher
+freebsd: check-env rules-compiler  $(BUILD_FOLDER)/freebsd/kraken $(BUILD_FOLDER)/freebsd/kraken-launcher
 
 $(BUILD_FOLDER)/freebsd/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
 	@mkdir -p $(@D)
@@ -140,11 +149,15 @@ $(BUILD_FOLDER)/freebsd/kraken-launcher: $(LAUNCHER_SRC)
 		-o $@
 	@echo "[builder] Done!"
 
+
+#==============================================================================
+# Windows
+#==============================================================================
 .PHONY: windows
 windows: windows-386 windows-amd64
 
 .PHONY: windows-386
-windows-386: $(BUILD_FOLDER)/windows-386/kraken.exe $(BUILD_FOLDER)/windows-386/kraken-launcher.exe
+windows-386: check-env rules-compiler  $(BUILD_FOLDER)/windows-386/kraken.exe $(BUILD_FOLDER)/windows-386/kraken-launcher.exe
 
 $(BUILD_FOLDER)/windows-386/kraken.exe: $(BUILD_FOLDER)/compiler $(YARA_SRC)-windows-386/done $(KRAKEN_SRC)
 	@mkdir -p $(@D)
@@ -165,7 +178,7 @@ $(BUILD_FOLDER)/windows-386/kraken-launcher.exe: $(LAUNCHER_SRC)
 	@echo "[builder] Done!"
 
 .PHONY: windows-amd64
-windows-amd64: $(BUILD_FOLDER)/windows-amd64/kraken.exe $(BUILD_FOLDER)/windows-amd64/kraken-launcher.exe
+windows-amd64: check-env rules-compiler  $(BUILD_FOLDER)/windows-amd64/kraken.exe $(BUILD_FOLDER)/windows-amd64/kraken-launcher.exe
 
 $(BUILD_FOLDER)/windows-amd64/kraken.exe: $(BUILD_FOLDER)/compiler $(YARA_SRC)-windows-amd64/done $(KRAKEN_SRC)
 	@mkdir -p $(@D)
@@ -184,6 +197,22 @@ $(BUILD_FOLDER)/windows-amd64/kraken-launcher.exe: $(LAUNCHER_SRC)
 	@cd launcher; $(FLAGS_WINDOWS_AMD64) go build --ldflags '-s -w -extldflags "-static" -H=windowsgui' \
 		-o $@
 	@echo "[builder] Done!"
+
+
+#==============================================================================
+# Misc
+#==============================================================================
+.PHONY: lint
+lint:
+	@echo "[lint] Running linter on codebase"
+	@golint ./...
+
+.PHONY: deps
+deps:
+	@echo "[deps] Installing dependencies..."
+	go mod download
+	go get github.com/akavel/rsrc
+	@echo "[deps] Dependencies installed."
 
 .PHONY: clean
 clean:
