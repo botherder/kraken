@@ -25,6 +25,7 @@ $(YARA_SRC).tar.gz:
 yara-src: $(YARA_SRC)/configure
 $(YARA_SRC)/configure: $(YARA_SRC).tar.gz
 	tar -C $(dir $(@D)) -xzf $^
+	( cd $(@D) && patch -p1 < $(CURDIR)/_non-golang/yara-pr-1416-backport.patch )
 	cd $(@D) && ./bootstrap.sh
 
 .PHONY: yara-windows-386
