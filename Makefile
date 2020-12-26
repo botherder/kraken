@@ -1,10 +1,10 @@
 BUILD_FOLDER  = $(CURDIR)/build
 
-FLAGS_LINUX   = GOOS=linux GOARCH=amd64 CGO_ENABLED=1
-FLAGS_DARWIN  = GOOS=darwin GOARCH=amd64 CGO_ENABLED=1
-FLAGS_FREEBSD = GOOS=freebsd GOARCH=amd64 CGO_ENABLED=1
-FLAGS_WINDOWS_386 = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-386/lib/pkgconfig/
-FLAGS_WINDOWS_AMD64 = GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-amd64/lib/pkgconfig/
+FLAGS_LINUX   = GOOS=linux GOARCH=amd64 CGO_ENABLED=1 CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
+FLAGS_DARWIN  = GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
+FLAGS_FREEBSD = GOOS=freebsd GOARCH=amd64 CGO_ENABLED=1 CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
+FLAGS_WINDOWS_386 = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-386/lib/pkgconfig/ CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
+FLAGS_WINDOWS_AMD64 = GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-amd64/lib/pkgconfig/ CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
 
 KRAKEN_SRC   = $(wildcard *.go)
 LAUNCHER_SRC = $(wildcard launcher/*.go)
