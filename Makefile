@@ -6,7 +6,7 @@ FLAGS_FREEBSD = GOOS=freebsd GOARCH=amd64 CGO_ENABLED=1 CGO_CFLAGS="-g -O2 -Wno-
 FLAGS_WINDOWS_386 = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-386/lib/pkgconfig/ CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
 FLAGS_WINDOWS_AMD64 = GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-amd64/lib/pkgconfig/ CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
 
-KRAKEN_SRC   = $(wildcard *.go)
+KRAKEN_SRC   = $(sort $(wildcard *.go) bindata.go)
 LAUNCHER_SRC = $(wildcard launcher/*.go)
 COMPILER_SRC = $(wildcard compiler/*.go)
 
@@ -74,19 +74,21 @@ endif
 .PHONY: rules-compiler
 rules-compiler: $(BUILD_FOLDER)/compiler
 $(BUILD_FOLDER)/compiler: $(COMPILER_SRC)
-ifdef RULES
 	@mkdir -p $(@D)
-
 	@echo "[rules-compiler] Building rules compiler..."
 	@cd compiler; go build -o $@
 
+rules: $(BUILD_FOLDER)/compiler $(RULES)
+ifdef RULES
 	@echo "[rules-compiler] Compiling Yara rules..."
-	@$@ $(RULES)
-
-	@echo "[rules-compiler] Launching binary resource builder..."
-	@go-bindata rules
+	$(BUILD_FOLDER)/compiler $(RULES)
+else
+	$(error "RULES has not been specified")
 endif
 
+bindata.go: rules
+	@echo "[rules-compiler] Launching binary resource builder..."
+	go-bindata -o $@ $^
 
 #==============================================================================
 # Linux
@@ -94,7 +96,7 @@ endif
 .PHONY: linux
 linux: check-env rules-compiler $(BUILD_FOLDER)/linux/kraken $(BUILD_FOLDER)/linux/kraken-launcher
 
-$(BUILD_FOLDER)/linux/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
+$(BUILD_FOLDER)/linux/kraken: $(KRAKEN_SRC)
 	@mkdir -p $(@D)
 	@echo "[builder] Building Linux executable..."
 	@$(FLAGS_LINUX) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
@@ -115,7 +117,7 @@ $(BUILD_FOLDER)/linux/kraken-launcher: $(LAUNCHER_SRC)
 .PHONY: darwin
 darwin: check-env rules-compiler  $(BUILD_FOLDER)/darwin/kraken $(BUILD_FOLDER)/darwin/kraken-launcher
 
-$(BUILD_FOLDER)/darwin/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
+$(BUILD_FOLDER)/darwin/kraken: $(KRAKEN_SRC)
 	@mkdir -p $(@D)
 	@echo "[builder] Building Darwin executable..."
 	@$(FLAGS_DARWIN) go build --ldflags '-s -w -extldflags "-lm" -X main.DefaultBaseDomain=$(BACKEND)' \
@@ -136,7 +138,7 @@ $(BUILD_FOLDER)/darwin/kraken-launcher: $(LAUNCHER_SRC)
 .PHONY: freebsd
 freebsd: check-env rules-compiler  $(BUILD_FOLDER)/freebsd/kraken $(BUILD_FOLDER)/freebsd/kraken-launcher
 
-$(BUILD_FOLDER)/freebsd/kraken: $(BUILD_FOLDER)/compiler $(KRAKEN_SRC)
+$(BUILD_FOLDER)/freebsd/kraken: $(KRAKEN_SRC)
 	@mkdir -p $(@D)
 	@echo "[builder] Building FreeBSD executable..."
 	@$(FLAGS_FREEBSD) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
@@ -160,7 +162,7 @@ windows: windows-386 windows-amd64
 .PHONY: windows-386
 windows-386: check-env rules-compiler  $(BUILD_FOLDER)/windows-386/kraken.exe $(BUILD_FOLDER)/windows-386/kraken-launcher.exe
 
-$(BUILD_FOLDER)/windows-386/kraken.exe: $(BUILD_FOLDER)/compiler $(YARA_SRC)-windows-386/done $(KRAKEN_SRC)
+$(BUILD_FOLDER)/windows-386/kraken.exe: $(YARA_SRC)-windows-386/done $(KRAKEN_SRC)
 	@mkdir -p $(@D)
 
 	#@rsrc -manifest kraken.manifest -ico kraken.ico -o rsrc.syso
@@ -181,7 +183,7 @@ $(BUILD_FOLDER)/windows-386/kraken-launcher.exe: $(LAUNCHER_SRC)
 .PHONY: windows-amd64
 windows-amd64: check-env rules-compiler  $(BUILD_FOLDER)/windows-amd64/kraken.exe $(BUILD_FOLDER)/windows-amd64/kraken-launcher.exe
 
-$(BUILD_FOLDER)/windows-amd64/kraken.exe: $(BUILD_FOLDER)/compiler $(YARA_SRC)-windows-amd64/done $(KRAKEN_SRC)
+$(BUILD_FOLDER)/windows-amd64/kraken.exe: $(YARA_SRC)-windows-amd64/done $(KRAKEN_SRC)
 	@mkdir -p $(@D)
 
 	#@rsrc -manifest kraken.manifest -ico kraken.ico -o rsrc.syso
