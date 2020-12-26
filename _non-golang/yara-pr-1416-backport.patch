@@ -1,0 +1,49 @@
+From 78b5052b3aa747e7d80939ff4c6f2748512b4507 Mon Sep 17 00:00:00 2001
+From: Hilko Bengen <bengen@hilluzination.de>
+Date: Sun, 13 Dec 2020 15:23:30 +0100
+Subject: [PATCH] Move global yr_cryptprov definition from header to to C file
+
+This fixes build failures of Microsoft Crypto API support with GCC 10
+as observed on Debian/unstable (gcc-mingw-w64/10.2.0-18+24) and on
+MSYS2 (mingw-w64-x86_64-gcc/10.2.0-6):
+
+/usr/bin/x86_64-w64-mingw32-ld: /BUILDPATH/libyara/.libs/libyara.a(pe.o):pe.c:(.bss+0x0): multiple definition of `yr_cryptprov'; /BUILDPATH/libyara/.libs/libyara.a(libyara.o):libyara.c:(.bss+0x208): first defined here
+/usr/bin/x86_64-w64-mingw32-ld: /BUILDPATH/libyara/.libs/libyara.a(hash.o):hash.c:(.bss+0x0): multiple definition of `yr_cryptprov'; /BUILDPATH/libyara/.libs/libyara.a(libyara.o):libyara.c:(.bss+0x208): first defined here
+---
+ libyara/crypto.h  | 2 +-
+ libyara/libyara.c | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/libyara/crypto.h b/libyara/crypto.h
+index 4a0e5cea..bc08c9c5 100644
+--- a/libyara/crypto.h
++++ b/libyara/crypto.h
+@@ -68,7 +68,7 @@ typedef SHA256_CTX yr_sha256_ctx;
+ #include <windows.h>
+ #include <wincrypt.h>
+ 
+-HCRYPTPROV yr_cryptprov;
++extern HCRYPTPROV yr_cryptprov;
+ 
+ typedef HCRYPTHASH yr_md5_ctx;
+ typedef HCRYPTHASH yr_sha1_ctx;
+diff --git a/libyara/libyara.c b/libyara/libyara.c
+index 65c79677..d144d631 100644
+--- a/libyara/libyara.c
++++ b/libyara/libyara.c
+@@ -103,6 +103,12 @@ static void _locking_function(
+ 
+ #endif
+ 
++#if defined(HAVE_WINCRYPT_H)
++
++HCRYPTPROV yr_cryptprov;
++
++#endif
++
+ //
+ // yr_initialize
+ //
+-- 
+2.20.1
+
