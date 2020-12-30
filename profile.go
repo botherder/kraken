@@ -22,7 +22,7 @@ import (
 	"os"
 	"os/user"
 
-	"github.com/botherder/go-files"
+	"github.com/botherder/go-savetime/hashes"
 	"github.com/matishsiao/goInfo"
 )
 
@@ -33,7 +33,7 @@ func getMachineID() string {
 	for _, iface := range ifaces {
 		mac := iface.HardwareAddr.String()
 		if len(mac) == 17 {
-			hash, _ := files.HashString(mac, "sha1")
+			hash, _ := hashes.StringSHA1(mac)
 			return hash
 		}
 	}

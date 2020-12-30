@@ -19,7 +19,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/botherder/go-autoruns"
+	"github.com/botherder/go-autoruns/v2"
 	"gopkg.in/resty.v0"
 )
 

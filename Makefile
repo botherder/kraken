@@ -221,5 +221,5 @@ deps:
 clean:
 	rm -f rules
 	rm -f bindata.go
-	rm -f rsrc.syso
+	rm -f rsrc_*.syso
 	rm -rf $(BUILD_FOLDER)

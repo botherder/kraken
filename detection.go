@@ -21,7 +21,8 @@ import (
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/botherder/go-files"
+	"github.com/botherder/go-savetime/files"
+	"github.com/botherder/go-savetime/hashes"
 )
 
 // Detection contains the information to report a Yara detection.
@@ -38,9 +39,9 @@ type Detection struct {
 
 // NewDetection instantiates a new Detection.
 func NewDetection(recordType, imagePath, imageName, signature string, pid int32) *Detection {
-	md5, _ := files.HashFile(imagePath, "md5")
-	sha1, _ := files.HashFile(imagePath, "sha1")
-	sha256, _ := files.HashFile(imagePath, "sha256")
+	md5, _ := hashes.FileMD5(imagePath)
+	sha1, _ := hashes.FileSHA1(imagePath)
+	sha256, _ := hashes.FileSHA256(imagePath)
 
 	return &Detection{
 		Type:      recordType,

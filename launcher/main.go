@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/botherder/go-files"
+	"github.com/botherder/go-savetime/hashes"
 	"gopkg.in/resty.v0"
 )
 
@@ -16,7 +16,7 @@ func apiVersionCheck() (string, error) {
 		URL     string `json:"url"`
 	}
 
-	hash, _ := files.HashFile(AgentExe, "sha1")
+	hash, _ := hashes.FileSHA1(AgentExe)
 
 	response, err := resty.R().
 		SetHeader("Content-Type", "application/json; charset=utf-8").

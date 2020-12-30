@@ -22,8 +22,8 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/botherder/go-autoruns"
-	"github.com/botherder/go-files"
+	"github.com/botherder/go-autoruns/v2"
+	"github.com/botherder/go-savetime/files"
 )
 
 func autorunDetected(autorun *autoruns.Autorun, signature string) *Detection {
@@ -107,9 +107,7 @@ func autorunWatch() {
 	for {
 		select {
 		case <-ticker:
-			autoruns := autoruns.Autoruns()
-
-			for _, autorun := range autoruns {
+			for _, autorun := range autoruns.GetAllAutoruns() {
 				autorunScan(autorun)
 			}
 		}

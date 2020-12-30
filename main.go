@@ -20,7 +20,7 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/botherder/go-autoruns"
+	"github.com/botherder/go-autoruns/v2"
 	"github.com/mattn/go-colorable"
 	"github.com/shirou/gopsutil/process"
 	flag "github.com/spf13/pflag"
@@ -149,8 +149,7 @@ func main() {
 	// We scan the running autoruns.
 	if *noAutorunsScan == false {
 		log.Info("Scanning autoruns...")
-		autoruns := autoruns.Autoruns()
-		for _, autorun := range autoruns {
+		for _, autorun := range autoruns.GetAllAutoruns() {
 			detection := autorunScan(autorun)
 			if detection != nil {
 				detections = append(detections, detection)

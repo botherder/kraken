@@ -20,7 +20,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/botherder/go-autoruns"
+	"github.com/botherder/go-autoruns/v2"
 	_ "github.com/mattn/go-sqlite3"
 )
 
