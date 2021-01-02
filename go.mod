@@ -9,7 +9,7 @@ require (
 	github.com/botherder/go-autoruns v0.0.0-20200530215510-d8670cf1a229
 	github.com/botherder/go-autoruns/v2 v2.0.0-20201230193248-ec8ca79ce9d4
 	github.com/botherder/go-files v0.0.0-20180205213231-2246e61e05ec
-	github.com/botherder/go-savetime v0.0.0-20201230153911-102454c6e533
+	github.com/botherder/go-savetime v1.0.1
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hillu/go-yara/v4 v4.0.3
