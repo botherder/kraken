@@ -50,7 +50,7 @@ func filesystemScan() (detections []*Detection) {
 
 		filepath.Walk(root, func(filePath string, fileInfo os.FileInfo, err error) error {
 			log.Debug("Scanning file ", filePath)
-			matches, _ := scanner.ScanFile(filePath)
+			matches, _ := yaraScanner.ScanFile(filePath)
 			for _, match := range matches {
 				detections = append(detections, fileDetected(filePath, match.Rule))
 			}

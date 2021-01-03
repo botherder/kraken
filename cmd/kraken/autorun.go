@@ -24,6 +24,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-autoruns/v2"
 	"github.com/botherder/go-savetime/files"
+	"github.com/botherder/kraken/storage"
 )
 
 func autorunDetected(autorun *autoruns.Autorun, signature string) *Detection {
@@ -80,7 +81,7 @@ func autorunScan(autorun *autoruns.Autorun) *Detection {
 
 		// We backup the autorun file.
 		if _, err := os.Stat(autorun.ImagePath); err == nil {
-			dstPath := filepath.Join(StorageFiles, autorun.SHA1)
+			dstPath := filepath.Join(storage.StorageFiles, autorun.SHA1)
 			if _, err := os.Stat(dstPath); os.IsNotExist(err) {
 				files.Copy(autorun.ImagePath, dstPath)
 			}
@@ -90,7 +91,7 @@ func autorunScan(autorun *autoruns.Autorun) *Detection {
 	// Lastly, we scan it.
 	if _, err := os.Stat(autorun.ImagePath); err == nil {
 		log.Debug("Scanning ", autorun.Type, " autorun at path ", autorun.ImagePath)
-		matches, _ := scanner.ScanFile(autorun.ImagePath)
+		matches, _ := yaraScanner.ScanFile(autorun.ImagePath)
 		for _, match := range matches {
 			return autorunDetected(autorun, match.Rule)
 		}

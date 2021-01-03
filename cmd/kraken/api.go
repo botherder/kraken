@@ -20,7 +20,7 @@ import (
 	"fmt"
 
 	"github.com/botherder/go-autoruns/v2"
-	"gopkg.in/resty.v0"
+	"github.com/go-resty/resty/v2"
 )
 
 // Registration contains the information to register to the API.
@@ -42,7 +42,8 @@ func apiRegister() error {
 		Version:         AgentVersion,
 	}
 
-	response, err := resty.R().
+	client := resty.New()
+	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(registration).
 		Post(config.URLToRegister)
@@ -62,7 +63,8 @@ func apiRegister() error {
 
 // Sends an heartbeat to the API server.
 func apiHeartbeat() error {
-	response, err := resty.R().
+	client := resty.New()
+	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(fmt.Sprintf(`{"identifier":"%s"}`, config.MachineID)).
 		Post(config.URLToHeartbeat)
@@ -82,7 +84,8 @@ func apiHeartbeat() error {
 
 // Report a detection.
 func apiDetection(record *Detection) error {
-	response, err := resty.R().
+	client := resty.New()
+	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(record).
 		Post(config.URLToDetection)
@@ -102,7 +105,8 @@ func apiDetection(record *Detection) error {
 
 // Report an autorun.
 func apiAutorun(record *autoruns.Autorun) error {
-	response, err := resty.R().
+	client := resty.New()
+	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(record).
 		Post(config.URLToAutorun)

@@ -23,6 +23,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-savetime/files"
 	"github.com/botherder/go-savetime/hashes"
+	"github.com/botherder/kraken/storage"
 )
 
 // Detection contains the information to report a Yara detection.
@@ -37,7 +38,7 @@ type Detection struct {
 	Signature string `json:"signature"`
 }
 
-// NewDetection instantiates a new Detection.
+// New instantiates a new Detection.
 func NewDetection(recordType, imagePath, imageName, signature string, pid int32) *Detection {
 	md5, _ := hashes.FileMD5(imagePath)
 	sha1, _ := hashes.FileSHA1(imagePath)
@@ -95,7 +96,7 @@ func (d *Detection) Backup() error {
 		return err
 	}
 
-	dstPath := filepath.Join(StorageFiles, d.SHA1)
+	dstPath := filepath.Join(storage.StorageFiles, d.SHA1)
 	if _, err := os.Stat(dstPath); os.IsNotExist(err) {
 		err = files.Copy(d.ImagePath, dstPath)
 		if err != nil {

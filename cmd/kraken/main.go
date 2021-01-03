@@ -18,17 +18,23 @@ package main
 
 import (
 	"os"
+	"io/ioutil"
+	"fmt"
+	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-autoruns/v2"
+	"github.com/botherder/go-savetime/runtime"
+	"github.com/botherder/kraken/scanner"
+	"github.com/botherder/kraken/storage"
 	"github.com/mattn/go-colorable"
 	"github.com/shirou/gopsutil/process"
 	flag "github.com/spf13/pflag"
 )
 
 var (
-	// This is our Yara scanner.
-	scanner Scanner
+	// This is our Yara yaraScanner.
+	yaraScanner scanner.Scanner
 	// This is a flag to enable debug logging.
 	debug *bool
 	// This is a flag to determine whether to execute as a permanent agent or not.
@@ -81,11 +87,79 @@ func initLogging() {
 func initStorage() {
 	// We create the folder only if we're running in daemon mode.
 	if *daemon == true {
-		// This should create StorageBase and StorageFiles.
-		if _, err := os.Stat(StorageFiles); os.IsNotExist(err) {
-			os.MkdirAll(StorageFiles, 0777)
+		// This should create storage.StorageBase and storage.StorageFiles.
+		if _, err := os.Stat(storage.StorageFiles); os.IsNotExist(err) {
+			os.MkdirAll(storage.StorageFiles, 0777)
 		}
 	}
+}
+
+func initScanner() error {
+	log.Info("Loading Yara rules...")
+
+	var err error
+	yaraScanner = scanner.New()
+
+	// If a customRulesPath is specified, we compile those rules.
+	if *customRulesPath != "" {
+		yaraScanner.Rules, err = scanner.Compile(*customRulesPath)
+		if err != nil {
+			yaraScanner.Available = false
+			return fmt.Errorf("Unable to compile custom Yara rules at path %s: %s", customRulesPath, err)
+		}
+
+		yaraScanner.Available = true
+
+		// NOTE: In this case we return either way, because if a suer specified
+		//       a custom rules path, we should expect they wouldn't want to
+		//       continue if an error occurred.
+		return nil
+	}
+
+	// If no customRulesPath is specified, we try to locate a locally stored
+	// compiled rules file.
+	localRulesPaths := []string{
+		filepath.Join(runtime.GetExecutableDirectory(), "rules"),
+		storage.StorageRules,
+	}
+	for _, localRulesPath := range localRulesPaths {
+		if _, err := os.Stat(localRulesPath); !os.IsNotExist(err) {
+			err = yaraScanner.LoadRules(localRulesPath)
+			if err != nil {
+				log.Error("Unable to load compiled rules file at path %s: %s", localRulesPath, err)
+				yaraScanner.Available = false
+			} else {
+				yaraScanner.Available = true
+				// If we successfully loaded some rules, we can stop here.
+				return nil
+			}
+		}
+	}
+
+	// If no rules have been selected yet, we try to extract a rules file
+	// from the embedded assets.
+	log.Debug("Trying to load rules file from embedded assets...")
+
+	// Load embedded rules.
+	data, _ := Asset("rules")
+
+	// Create a temporary file for execution.
+	// TODO: should this be stored permanently on disk instead?
+	tmpRulesFile, err := ioutil.TempFile("", "agent-")
+	if err != nil {
+		return fmt.Errorf("Unable to temporarily store rules: %s", err)
+	}
+	defer tmpRulesFile.Close()
+
+	// We store the rules file to the temporary location.
+	tmpRulesFile.Write(data)
+
+	err = yaraScanner.LoadRules(tmpRulesFile.Name())
+	if err != nil {
+		return fmt.Errorf("Unable to load rules from embedded assets: %s", err)
+	}
+
+	return nil
 }
 
 // This function contains just the preliminary actions.
@@ -98,6 +172,8 @@ func init() {
 	initStorage()
 	// Initialize configuration.
 	initConfig()
+	// Initialize Yara yaraScanner.
+	initScanner()
 
 	log.Debug("This machine is identified as ", config.MachineID)
 	log.Debug("URLBaseDomain: ", config.URLBaseDomain)
@@ -123,15 +199,6 @@ func init() {
 }
 
 func main() {
-	// Initialize the Yara scanner.
-	err := scanner.Init()
-	if err != nil {
-		scanner.Available = false
-	} else {
-		scanner.Available = true
-	}
-	defer scanner.Close()
-
 	// We store here the list of detections.
 	var detections []*Detection
 	// Empty list of pids.

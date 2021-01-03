@@ -14,15 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package main
+package scanner
 
 import (
-	"os"
-	"path/filepath"
+	"github.com/hillu/go-yara/v4"
 )
 
-// AgentFolder is the folder where the executables are stored.
-var AgentFolder = filepath.Join(os.Getenv("ProgramFiles"), "Kraken")
+// Scanner is an instance of the Yara scanner.
+type Scanner struct {
+	Available bool
+	Rules *yara.Rules
+}
 
-// AgentExe is the full location to the agent executable.
-var AgentExe = filepath.Join(AgentFolder, "kraken.exe")
+func (s *Scanner) LoadRules(rulesPath string) error {
+	var err error
+	s.Rules, err = yara.LoadRules(rulesPath)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func New() Scanner {
+	return Scanner{}
+}

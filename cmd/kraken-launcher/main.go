@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/botherder/go-savetime/hashes"
-	"gopkg.in/resty.v0"
+	"github.com/botherder/kraken/storage"
+	"github.com/go-resty/resty/v2"
 )
 
 // Check-in to the API server.
@@ -16,13 +17,14 @@ func apiVersionCheck() (string, error) {
 		URL     string `json:"url"`
 	}
 
-	hash, _ := hashes.FileSHA1(AgentExe)
+	hash, _ := hashes.FileSHA1(storage.StorageExe)
 
-	response, err := resty.R().
+	client := resty.New()
+	response, err := client.R().
 		SetHeader("Content-Type", "application/json; charset=utf-8").
 		SetBody(fmt.Sprintf(`{"sha1": "%s"}`, hash)).
 		SetResult(&Response{}).
-		Post(URLToCheck)
+		Post("https://%s/api/versioncheck/")
 
 	if err != nil {
 		return "", fmt.Errorf("Unable to check version with REST API: %s", err.Error())
@@ -39,8 +41,9 @@ func apiVersionCheck() (string, error) {
 }
 
 func download(url string) error {
-	_, err := resty.R().
-		SetOutput(AgentExe).
+	client := resty.New()
+	_, err := client.R().
+		SetOutput(storage.StorageExe).
 		Get(url)
 
 	if err != nil {

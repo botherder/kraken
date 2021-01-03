@@ -19,10 +19,12 @@ package main
 import (
 	"os/exec"
 	"syscall"
+
+	"github.com/botherder/kraken/storage"
 )
 
 func launchAgent() error {
-	cmd := exec.Command(AgentExe, "-daemon")
+	cmd := exec.Command(storage.StorageExe, "-daemon")
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	err := cmd.Start()
 	if err != nil {

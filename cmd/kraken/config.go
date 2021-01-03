@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/botherder/kraken/storage"
 	"github.com/spf13/viper"
 )
 
@@ -50,14 +51,14 @@ func initConfig() {
 	}
 
 	// Get folder and file name of standard config file.
-	fileName := filepath.Base(StorageConfig)
+	fileName := filepath.Base(storage.StorageConfig)
 
 	log.Info("Looking for configuration file with name ", fileName)
 
 	// Specify configuration file properties.
 	viper.SetConfigName(strings.Split(fileName, ".")[0])
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(StorageBase)
+	viper.AddConfigPath(storage.StorageBase)
 	viper.AddConfigPath(".")
 
 	// Try to read the config file.
@@ -82,11 +83,11 @@ func initConfig() {
 	// Write a new config file if none was found.
 	// We actually write it to disk only if we're running in daemon mode.
 	if readError != nil && *daemon == true {
-		// err := viper.SafeWriteConfigAs(StorageConfig)
-		err := viper.WriteConfigAs(StorageConfig)
+		// err := viper.SafeWriteConfigAs(storage.StorageConfig)
+		err := viper.WriteConfigAs(storage.StorageConfig)
 		if err != nil {
 			log.Fatal("Unable to write a new default configuration to file: ", err.Error())
 		}
-		log.Info("New default configuration file written to ", StorageConfig)
+		log.Info("New default configuration file written to ", storage.StorageConfig)
 	}
 }

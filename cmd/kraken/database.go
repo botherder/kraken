@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	"github.com/botherder/go-autoruns/v2"
+	"github.com/botherder/kraken/storage"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -62,7 +63,7 @@ func NewDatabase() *Database {
 // Open initializes the database, if it does not exist yet it creates the necessary tables.
 func (d *Database) Open() error {
 	var err error
-	d.db, err = sql.Open("sqlite3", StorageDatabase)
+	d.db, err = sql.Open("sqlite3", storage.StorageDatabase)
 	if err != nil {
 		return fmt.Errorf("Unable to open database: %s", err.Error())
 	}

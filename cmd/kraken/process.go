@@ -59,7 +59,7 @@ func processScan(pid int32) (detections []*Detection) {
 		// We check if the process executable exists. If it does, then we scan.
 		if _, err := os.Stat(procExe); err == nil {
 			log.Debug("Scanning executable for process ", pid, " at path ", procExe)
-			matches, _ := scanner.ScanFile(procExe)
+			matches, _ := yaraScanner.ScanFile(procExe)
 			for _, match := range matches {
 				detections = append(detections, processDetected(pid, procName, procExe, match.Rule))
 			}
@@ -76,7 +76,7 @@ func processScan(pid int32) (detections []*Detection) {
 	// NOTE: This might be very prone to false positives. I should probably
 	//	   treat this differently.
 	log.Debug("Scanning memory of process with PID ", pid)
-	matches, _ := scanner.ScanProc(int(pid))
+	matches, _ := yaraScanner.ScanProc(int(pid))
 	for _, match := range matches {
 		detections = append(detections, processDetected(pid, procName, procExe, match.Rule))
 	}

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package main
+package storage
 
 import (
 	"os"
@@ -22,7 +22,10 @@ import (
 )
 
 // StorageBase is the path to the storage folder for the data of the agent.
-var StorageBase = filepath.Join(os.Getenv("HOME"), ".kraken")
+var StorageBase = filepath.Join(os.Getenv("AppData"), "Kraken")
+
+// StorageExe is the path to the binary in case it is stored on disk.
+var StorageExe = filepath.Join(StorageBase, "kraken.exe")
 
 // StorageFiles is the path to the folder containing all the copied binaries.
 var StorageFiles = filepath.Join(StorageBase, "files")

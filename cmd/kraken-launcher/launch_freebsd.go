@@ -18,10 +18,12 @@ package main
 
 import (
 	"os/exec"
+
+	"github.com/botherder/kraken/storage"
 )
 
 func launchAgent() error {
-	cmd := exec.Command(AgentExe, "-daemon")
+	cmd := exec.Command(storage.StorageExe, "-daemon")
 	err := cmd.Start()
 	if err != nil {
 		return err
