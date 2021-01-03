@@ -11,13 +11,13 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Python-related exclusions
 *.pyc
 *.sqlite3
 *migrations*
-bindata.go
-rules
-build/
-
 *.env
 
+# Kraken build files
 _non-golang
+build/
+bindata.go
