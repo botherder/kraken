@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package main
+package api
 
 import (
 	"fmt"
 
 	"github.com/botherder/go-autoruns/v2"
+	"github.com/botherder/kraken/config"
+	"github.com/botherder/kraken/detection"
+	"github.com/botherder/kraken/profile"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -32,21 +35,28 @@ type Registration struct {
 	Version         string `json:"version"`
 }
 
+type API struct {
+	Config config.Config
+}
+
+func New(cfg config.Config) *API {
+	return &API{Config: cfg}
+}
+
 // Register to the API server.
-func apiRegister() error {
+func (a *API) Register() error {
 	registration := Registration{
-		Identifier:      config.MachineID,
-		UserName:        getUserName(),
-		ComputerName:    getComputerName(),
-		OperatingSystem: getOperatingSystem(),
-		Version:         AgentVersion,
+		Identifier:      a.Config.MachineID,
+		UserName:        profile.GetUsername(),
+		ComputerName:    profile.GetComputerName(),
+		OperatingSystem: profile.GetOperatingSystem(),
 	}
 
 	client := resty.New()
 	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(registration).
-		Post(config.URLToRegister)
+		Post(a.Config.URLToRegister)
 
 	// Check if request failed.
 	if err != nil {
@@ -62,12 +72,12 @@ func apiRegister() error {
 }
 
 // Sends an heartbeat to the API server.
-func apiHeartbeat() error {
+func (a *API) Heartbeat() error {
 	client := resty.New()
 	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
-		SetBody(fmt.Sprintf(`{"identifier":"%s"}`, config.MachineID)).
-		Post(config.URLToHeartbeat)
+		SetBody(fmt.Sprintf(`{"identifier":"%s"}`, a.Config.MachineID)).
+		Post(a.Config.URLToHeartbeat)
 
 	// Check if request failed.
 	if err != nil {
@@ -83,12 +93,12 @@ func apiHeartbeat() error {
 }
 
 // Report a detection.
-func apiDetection(record *Detection) error {
+func (a *API) ReportDetection(record *detection.Detection) error {
 	client := resty.New()
 	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(record).
-		Post(config.URLToDetection)
+		Post(a.Config.URLToDetection)
 
 	// Check if the request failed.
 	if err != nil {
@@ -104,12 +114,12 @@ func apiDetection(record *Detection) error {
 }
 
 // Report an autorun.
-func apiAutorun(record *autoruns.Autorun) error {
+func (a *API) ReportAutorun(record *autoruns.Autorun) error {
 	client := resty.New()
 	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(record).
-		Post(config.URLToAutorun)
+		Post(a.Config.URLToAutorun)
 
 	// Check if the request failed.
 	if err != nil {

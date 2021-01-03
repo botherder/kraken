@@ -23,9 +23,11 @@ import (
 // Scanner is an instance of the Yara scanner.
 type Scanner struct {
 	Available bool
-	Rules *yara.Rules
+	Rules     *yara.Rules
 }
 
+// LoadRules uses Yara's LoadRules to load compiled rules from the specified
+// file path.
 func (s *Scanner) LoadRules(rulesPath string) error {
 	var err error
 	s.Rules, err = yara.LoadRules(rulesPath)
@@ -36,6 +38,7 @@ func (s *Scanner) LoadRules(rulesPath string) error {
 	return nil
 }
 
+// New returns a new Scanner instance.
 func New() Scanner {
 	return Scanner{}
 }

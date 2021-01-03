@@ -24,17 +24,18 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-autoruns/v2"
 	"github.com/botherder/go-savetime/files"
+	"github.com/botherder/kraken/api"
+	"github.com/botherder/kraken/detection"
 	"github.com/botherder/kraken/storage"
 )
 
-func autorunDetected(autorun *autoruns.Autorun, signature string) *Detection {
+func autorunDetected(autorun *autoruns.Autorun, signature string) *detection.Detection {
 	log.WithFields(log.Fields{
 		"type":       autorun.Type,
 		"image_path": autorun.ImagePath,
 	}).Warning("DETECTION! Malicious autorun detected as ", signature)
 
-	detection := NewDetection("autorun", autorun.ImagePath, autorun.ImageName, signature, 0)
-	detection.ReportAndStore()
+	detection := detection.New("autorun", autorun.ImagePath, autorun.ImageName, signature, 0)
 
 	return detection
 }
@@ -61,11 +62,12 @@ func autorunStoreInDatabase(autorun *autoruns.Autorun, wasReported bool) {
 	}
 }
 
-func autorunScan(autorun *autoruns.Autorun) *Detection {
+func autorunScan(autorun *autoruns.Autorun) *detection.Detection {
 	// We want to report autorun records even if they were not detected as malicous.
 	wasReported := false
 	if *report == true {
-		err := apiAutorun(autorun)
+		client := api.New(*cfg)
+		err := client.ReportAutorun(autorun)
 		if err != nil {
 			log.Error("Failed to report autorun record: ", err.Error())
 		} else {

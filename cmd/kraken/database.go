@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	"github.com/botherder/go-autoruns/v2"
+	"github.com/botherder/kraken/detection"
 	"github.com/botherder/kraken/storage"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -125,7 +126,7 @@ func (d *Database) StoreAutorun(record *autoruns.Autorun, reported bool) (int64,
 }
 
 // StoreDetection creates a record in the SQLite database for a malware detection.
-func (d *Database) StoreDetection(record *Detection, reported bool) (int64, error) {
+func (d *Database) StoreDetection(record *detection.Detection, reported bool) (int64, error) {
 	var reportedValue int
 	if reported {
 		reportedValue = 1

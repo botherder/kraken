@@ -17,14 +17,17 @@
 package main
 
 import (
-	"os"
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-autoruns/v2"
 	"github.com/botherder/go-savetime/runtime"
+	"github.com/botherder/kraken/api"
+	"github.com/botherder/kraken/config"
+	"github.com/botherder/kraken/detection"
 	"github.com/botherder/kraken/scanner"
 	"github.com/botherder/kraken/storage"
 	"github.com/mattn/go-colorable"
@@ -33,6 +36,8 @@ import (
 )
 
 var (
+	apiClient *api.API
+	cfg       *config.Config
 	// This is our Yara yaraScanner.
 	yaraScanner scanner.Scanner
 	// This is a flag to enable debug logging.
@@ -170,28 +175,30 @@ func init() {
 	initLogging()
 	// Initialize storage.
 	initStorage()
-	// Initialize configuration.
-	initConfig()
 	// Initialize Yara yaraScanner.
 	initScanner()
 
-	log.Debug("This machine is identified as ", config.MachineID)
-	log.Debug("URLBaseDomain: ", config.URLBaseDomain)
-	log.Debug("URLToRules: ", config.URLToRules)
-	log.Debug("URLToRegister: ", config.URLToRegister)
-	log.Debug("URLToDetection: ", config.URLToDetection)
-	log.Debug("URLToAutorun: ", config.URLToAutorun)
+	cfg = config.New(*customBaseDomain, DefaultBaseDomain)
+
+	log.Debug("This machine is identified as ", cfg.MachineID)
+	log.Debug("URLBaseDomain: ", cfg.URLBaseDomain)
+	log.Debug("URLToRules: ", cfg.URLToRules)
+	log.Debug("URLToRegister: ", cfg.URLToRegister)
+	log.Debug("URLToDetection: ", cfg.URLToDetection)
+	log.Debug("URLToAutorun: ", cfg.URLToAutorun)
 
 	// We register to the backend only if report is enabled.
 	if *report == true {
+		apiClient = api.New(*cfg)
+
 		// Register to the API server.
-		err := apiRegister()
+		err := apiClient.Register()
 		if err != nil {
 			log.Error("API registration failed: ", err.Error())
 		}
 
 		// Try to send an heartbeat.
-		err = apiHeartbeat()
+		err = apiClient.Heartbeat()
 		if err != nil {
 			log.Error("Unable to send heartbeat to server: ", err.Error())
 		}
@@ -200,7 +207,7 @@ func init() {
 
 func main() {
 	// We store here the list of detections.
-	var detections []*Detection
+	var detections []*detection.Detection
 	// Empty list of pids.
 	var pids []int32
 

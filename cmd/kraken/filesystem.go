@@ -21,20 +21,21 @@ import (
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/botherder/kraken/detection"
 )
 
-func fileDetected(filePath, signature string) *Detection {
+func fileDetected(filePath, signature string) *detection.Detection {
 	log.WithFields(log.Fields{
 		"file": filePath,
 	}).Warning("DETECTION! Malicious file detected as ", signature)
 
-	detection := NewDetection("filesystem", filePath, "", signature, 0)
-	detection.ReportAndStore()
+	detection := detection.New("filesystem", filePath, "", signature, 0)
+	// detection.ReportAndStore()
 
 	return detection
 }
 
-func filesystemScan() (detections []*Detection) {
+func filesystemScan() (detections []*detection.Detection) {
 	var roots []string
 	if *customFileSystemRoot == "" {
 		roots = getFileSystemRoots()

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package main
+package profile
 
 import (
 	"fmt"
@@ -28,7 +28,7 @@ import (
 
 // For a machine ID we use a SHA1 of the first Mac address we find.
 // TODO: should rather use the disk serial number.
-func getMachineID() string {
+func GetMachineID() string {
 	ifaces, _ := net.Interfaces()
 	for _, iface := range ifaces {
 		mac := iface.HardwareAddr.String()
@@ -42,7 +42,7 @@ func getMachineID() string {
 }
 
 // Get current username.
-func getUserName() string {
+func GetUsername() string {
 	userObject, err := user.Current()
 	if err != nil {
 		return ""
@@ -52,13 +52,13 @@ func getUserName() string {
 }
 
 // Get computer name.
-func getComputerName() string {
+func GetComputerName() string {
 	hostname, _ := os.Hostname()
 	return hostname
 }
 
 // Get some accurate version of the operating system.
-func getOperatingSystem() string {
+func GetOperatingSystem() string {
 	gi := goInfo.GetInfo()
 	return fmt.Sprintf("%s %s", gi.OS, gi.Core)
 }

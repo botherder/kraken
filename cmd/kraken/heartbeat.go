@@ -31,7 +31,7 @@ func heartbeatManager() {
 		select {
 		case <-ticker:
 			log.Info("Sending heartbeat to server...")
-			err := apiHeartbeat()
+			err := apiClient.Heartbeat()
 			if err != nil {
 				log.Error("Unable to send heartbeat to server: ", err.Error())
 			}

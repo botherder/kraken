@@ -21,6 +21,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/botherder/kraken/detection"
 	"github.com/shirou/gopsutil/process"
 )
 
@@ -32,19 +33,19 @@ func processTerminate(pid int32) bool {
 	return err == nil
 }
 
-func processDetected(pid int32, processName, processPath, signature string) *Detection {
+func processDetected(pid int32, processName, processPath, signature string) *detection.Detection {
 	log.WithFields(log.Fields{
 		"process": processName,
 		"pid":     pid,
 	}).Warning("DETECTION! Malicious process detected as ", signature)
 
-	detection := NewDetection("process", processPath, processName, signature, pid)
-	detection.ReportAndStore()
+	detection := detection.New("process", processPath, processName, signature, pid)
+	// detection.ReportAndStore()
 
 	return detection
 }
 
-func processScan(pid int32) (detections []*Detection) {
+func processScan(pid int32) (detections []*detection.Detection) {
 	// We check we're not scanning ourselves. That'd be awkward.
 	if os.Getpid() == int(pid) {
 		return nil

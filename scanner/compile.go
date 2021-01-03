@@ -17,9 +17,9 @@
 package scanner
 
 import (
+	"errors"
 	"os"
 	"path"
-	"errors"
 	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package main
+package config
 
 import (
 	"fmt"
@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/botherder/kraken/profile"
 	"github.com/botherder/kraken/storage"
 	"github.com/spf13/viper"
 )
@@ -37,17 +38,14 @@ type Config struct {
 	URLToAutorun   string
 }
 
-// This is our configuration.
-var config Config
-
-func initConfig() {
+func New(customBaseDomain, defaultBaseDomain string) *Config {
 	var baseDomain string
-	if *customBaseDomain != "" {
-		log.Debug("I was provided a custom backend: ", *customBaseDomain)
-		baseDomain = *customBaseDomain
+	if customBaseDomain != "" {
+		log.Debug("I was provided a custom backend: ", customBaseDomain)
+		baseDomain = customBaseDomain
 	} else {
-		log.Debug("I am going to use the default backend: ", DefaultBaseDomain)
-		baseDomain = DefaultBaseDomain
+		log.Debug("I am going to use the default backend: ", defaultBaseDomain)
+		baseDomain = defaultBaseDomain
 	}
 
 	// Get folder and file name of standard config file.
@@ -68,26 +66,28 @@ func initConfig() {
 	}
 
 	// Just in case there is no config file, we set defaults.
-	viper.SetDefault("machine_id", getMachineID())
+	viper.SetDefault("machine_id", profile.GetMachineID())
 	viper.SetDefault("base_domain", baseDomain)
 
-	// Save configuration values to our Config instance.
-	config.MachineID = viper.GetString("machine_id")
-	config.URLBaseDomain = viper.GetString("base_domain")
-	config.URLToRules = fmt.Sprintf("https://%s/rules", viper.GetString("base_domain"))
-	config.URLToRegister = fmt.Sprintf("https://%s/api/register/", viper.GetString("base_domain"))
-	config.URLToHeartbeat = fmt.Sprintf("https://%s/api/heartbeat/", viper.GetString("base_domain"))
-	config.URLToDetection = fmt.Sprintf("https://%s/api/detection/%s/", viper.GetString("base_domain"), viper.GetString("machine_id"))
-	config.URLToAutorun = fmt.Sprintf("https://%s/api/autorun/%s/", viper.GetString("base_domain"), viper.GetString("machine_id"))
+	cfg := Config{}
 
-	// Write a new config file if none was found.
-	// We actually write it to disk only if we're running in daemon mode.
-	if readError != nil && *daemon == true {
-		// err := viper.SafeWriteConfigAs(storage.StorageConfig)
-		err := viper.WriteConfigAs(storage.StorageConfig)
-		if err != nil {
-			log.Fatal("Unable to write a new default configuration to file: ", err.Error())
-		}
-		log.Info("New default configuration file written to ", storage.StorageConfig)
+	// Save configuration values to our Config instance.
+	cfg.MachineID = viper.GetString("machine_id")
+	cfg.URLBaseDomain = viper.GetString("base_domain")
+	cfg.URLToRules = fmt.Sprintf("https://%s/rules", viper.GetString("base_domain"))
+	cfg.URLToRegister = fmt.Sprintf("https://%s/api/register/", viper.GetString("base_domain"))
+	cfg.URLToHeartbeat = fmt.Sprintf("https://%s/api/heartbeat/", viper.GetString("base_domain"))
+	cfg.URLToDetection = fmt.Sprintf("https://%s/api/detection/%s/", viper.GetString("base_domain"), viper.GetString("machine_id"))
+	cfg.URLToAutorun = fmt.Sprintf("https://%s/api/autorun/%s/", viper.GetString("base_domain"), viper.GetString("machine_id"))
+
+	return &cfg
+}
+
+func (c *Config) Write() {
+	// err := viper.SafeWriteConfigAs(storage.StorageConfig)
+	err := viper.WriteConfigAs(storage.StorageConfig)
+	if err != nil {
+		log.Fatal("Unable to write a new default configuration to file: ", err.Error())
 	}
+	log.Info("New default configuration file written to ", storage.StorageConfig)
 }
