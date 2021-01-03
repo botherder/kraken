@@ -27,7 +27,7 @@ func apiVersionCheck() (string, error) {
 		Post("https://%s/api/versioncheck/")
 
 	if err != nil {
-		return "", fmt.Errorf("Unable to check version with REST API: %s", err.Error())
+		return "", fmt.Errorf("Unable to check version with REST API: %s", err)
 	}
 
 	data := response.Result().(*Response)
@@ -47,7 +47,7 @@ func download(url string) error {
 		Get(url)
 
 	if err != nil {
-		return fmt.Errorf("Unable to download URL %s: %s", url, err.Error())
+		return fmt.Errorf("Unable to download URL %s: %s", url, err)
 	}
 
 	return nil
@@ -56,7 +56,7 @@ func download(url string) error {
 func main() {
 	url, err := apiVersionCheck()
 	if err != nil {
-		fmt.Println("[!] ERROR: ", err.Error())
+		fmt.Println("[!] ERROR: ", err)
 	}
 
 	if url != "" {
@@ -64,7 +64,7 @@ func main() {
 
 		err = download(url)
 		if err != nil {
-			fmt.Println("[!] ERROR: ", err.Error())
+			fmt.Println("[!] ERROR: ", err)
 		}
 	} else {
 		fmt.Println("[-] Nothing new to download.")

@@ -66,7 +66,7 @@ func (d *Database) Open() error {
 	var err error
 	d.db, err = sql.Open("sqlite3", storage.StorageDatabase)
 	if err != nil {
-		return fmt.Errorf("Unable to open database: %s", err.Error())
+		return fmt.Errorf("Unable to open database: %s", err)
 	}
 	// defer d.db.Close()
 
@@ -85,7 +85,7 @@ func (d *Database) Close() {
 func (d *Database) IsAutorunStored(record *autoruns.Autorun) (bool, error) {
 	statement, err := d.db.Prepare("SELECT COUNT(*) as count FROM autoruns WHERE record_type = ? AND image_path = ? AND arguments = ?;")
 	if err != nil {
-		return false, fmt.Errorf("Unable to prepare isAutorunStored query: %s", err.Error())
+		return false, fmt.Errorf("Unable to prepare isAutorunStored query: %s", err)
 	}
 	defer statement.Close()
 
@@ -94,7 +94,7 @@ func (d *Database) IsAutorunStored(record *autoruns.Autorun) (bool, error) {
 	for rows.Next() {
 		err := rows.Scan(&count)
 		if err != nil {
-			return false, fmt.Errorf("Unable to check if record exists in IsAutorunStored: %s", err.Error())
+			return false, fmt.Errorf("Unable to check if record exists in IsAutorunStored: %s", err)
 		}
 	}
 
@@ -114,12 +114,12 @@ func (d *Database) StoreAutorun(record *autoruns.Autorun, reported bool) (int64,
 
 	statement, err := d.db.Prepare("INSERT INTO autoruns (record_type, image_path, image_name, arguments, sha1, sha256, reported) VALUES (?, ?, ?, ?, ?, ?, ?);")
 	if err != nil {
-		return 0, fmt.Errorf("Unable to prepare StoreAutorun query: %s", err.Error())
+		return 0, fmt.Errorf("Unable to prepare StoreAutorun query: %s", err)
 	}
 
 	result, err := statement.Exec(record.Type, record.ImagePath, record.ImageName, record.Arguments, record.SHA1, record.SHA256, reportedValue)
 	if err != nil {
-		return 0, fmt.Errorf("Unable to insert new record: %s", err.Error())
+		return 0, fmt.Errorf("Unable to insert new record: %s", err)
 	}
 
 	return result.LastInsertId()
@@ -134,12 +134,12 @@ func (d *Database) StoreDetection(record *detection.Detection, reported bool) (i
 
 	statement, err := d.db.Prepare("INSERT INTO detections (detection_type, image_path, image_name, sha1, sha256, process_id, signature, reported) VALUES (?, ?, ?, ?, ?, ?, ?, ?);")
 	if err != nil {
-		return 0, fmt.Errorf("Unable to prepare StoreDetection query: %s", err.Error())
+		return 0, fmt.Errorf("Unable to prepare StoreDetection query: %s", err)
 	}
 
 	result, err := statement.Exec(record.Type, record.ImagePath, record.ImageName, record.SHA1, record.SHA256, record.ProcessID, record.Signature, reportedValue)
 	if err != nil {
-		return 0, fmt.Errorf("Unable to insert new record: %s", err.Error())
+		return 0, fmt.Errorf("Unable to insert new record: %s", err)
 	}
 
 	return result.LastInsertId()

@@ -45,7 +45,7 @@ func autorunStoreInDatabase(autorun *autoruns.Autorun, wasReported bool) {
 	db := NewDatabase()
 	err := db.Open()
 	if err != nil {
-		log.Error("Failed to store autorun record in local database: ", err.Error())
+		log.Error("Failed to store autorun record in local database: ", err)
 		return
 	}
 	defer db.Close()
@@ -69,7 +69,7 @@ func autorunScan(autorun *autoruns.Autorun) *detection.Detection {
 		client := api.New(*cfg)
 		err := client.ReportAutorun(autorun)
 		if err != nil {
-			log.Error("Failed to report autorun record: ", err.Error())
+			log.Error("Failed to report autorun record: ", err)
 		} else {
 			log.Debug("Autorun record reported to server!")
 			wasReported = true

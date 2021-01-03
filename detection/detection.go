@@ -64,7 +64,7 @@ func New(recordType, imagePath, imageName, signature string, pid int32) *Detecti
 // 	// If the report was successful, we don't need to mark it as pending in the
 // 	// local database.
 // 	if err != nil {
-// 		log.Error(err.Error())
+// 		log.Error(err)
 // 		return err
 // 	}
 
@@ -76,14 +76,14 @@ func New(recordType, imagePath, imageName, signature string, pid int32) *Detecti
 // 	db := NewDatabase()
 // 	err := db.Open()
 // 	if err != nil {
-// 		log.Error(err.Error())
+// 		log.Error(err)
 // 		return err
 // 	}
 // 	defer db.Close()
 
 // 	_, err = db.StoreDetection(d, wasReported)
 // 	if err != nil {
-// 		log.Error(err.Error())
+// 		log.Error(err)
 // 		return err
 // 	}
 

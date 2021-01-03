@@ -69,25 +69,22 @@ func New(customBaseDomain, defaultBaseDomain string) *Config {
 	viper.SetDefault("machine_id", profile.GetMachineID())
 	viper.SetDefault("base_domain", baseDomain)
 
-	cfg := Config{}
-
-	// Save configuration values to our Config instance.
-	cfg.MachineID = viper.GetString("machine_id")
-	cfg.URLBaseDomain = viper.GetString("base_domain")
-	cfg.URLToRules = fmt.Sprintf("https://%s/rules", viper.GetString("base_domain"))
-	cfg.URLToRegister = fmt.Sprintf("https://%s/api/register/", viper.GetString("base_domain"))
-	cfg.URLToHeartbeat = fmt.Sprintf("https://%s/api/heartbeat/", viper.GetString("base_domain"))
-	cfg.URLToDetection = fmt.Sprintf("https://%s/api/detection/%s/", viper.GetString("base_domain"), viper.GetString("machine_id"))
-	cfg.URLToAutorun = fmt.Sprintf("https://%s/api/autorun/%s/", viper.GetString("base_domain"), viper.GetString("machine_id"))
-
-	return &cfg
+	return &Config{
+		MachineID:      viper.GetString("machine_id"),
+		URLBaseDomain:  viper.GetString("base_domain"),
+		URLToRules:     fmt.Sprintf("https://%s/rules", viper.GetString("base_domain")),
+		URLToRegister:  fmt.Sprintf("https://%s/api/register/", viper.GetString("base_domain")),
+		URLToHeartbeat: fmt.Sprintf("https://%s/api/heartbeat/", viper.GetString("base_domain")),
+		URLToDetection: fmt.Sprintf("https://%s/api/detection/%s/", viper.GetString("base_domain"), viper.GetString("machine_id")),
+		URLToAutorun:   fmt.Sprintf("https://%s/api/autorun/%s/", viper.GetString("base_domain"), viper.GetString("machine_id")),
+	}
 }
 
-func (c *Config) Write() {
-	// err := viper.SafeWriteConfigAs(storage.StorageConfig)
-	err := viper.WriteConfigAs(storage.StorageConfig)
+func (c *Config) Write(configPath string) {
+	// err := viper.SafeWriteConfigAs(configPath)
+	err := viper.WriteConfigAs(configPath)
 	if err != nil {
-		log.Fatal("Unable to write a new default configuration to file: ", err.Error())
+		log.Fatal("Unable to write a new default configuration to file: ", err)
 	}
-	log.Info("New default configuration file written to ", storage.StorageConfig)
+	log.Info("New default configuration file written to ", configPath)
 }

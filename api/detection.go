@@ -14,27 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package main
+package api
 
 import (
-	"time"
+	"fmt"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/botherder/kraken/detection"
+	"github.com/go-resty/resty/v2"
 )
 
-func heartbeatManager() {
-	log.Info("Starting heartbeat...")
+// Report a detection.
+func (a *API) ReportDetection(record *detection.Detection) error {
+	client := resty.New()
+	response, err := client.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(record).
+		Post(a.Config.URLToDetection)
 
-	ticker := time.NewTicker(time.Minute * 30).C
-
-	for {
-		select {
-		case <-ticker:
-			log.Info("Sending heartbeat to server...")
-			err := apiClient.Heartbeat()
-			if err != nil {
-				log.Error("Unable to send heartbeat to server: ", err)
-			}
-		}
+	// Check if the request failed.
+	if err != nil {
+		return fmt.Errorf("Unable to send detection to API server: %s", err)
 	}
+
+	// Check if the response wasn't right.
+	if response.StatusCode() != 200 {
+		return fmt.Errorf("Unable to send detection to API server: we received response code %d", response.StatusCode())
+	}
+
+	return nil
 }

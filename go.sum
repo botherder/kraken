@@ -7,8 +7,6 @@ github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f/go.mod h1:3eOhrU
 github.com/botherder/go-autoruns/v2 v2.0.0-20201230193248-ec8ca79ce9d4 h1:Tg7SOpx48pTPBY36arsmPQB5q7go7LAnqh1bXPRsSRw=
 github.com/botherder/go-autoruns/v2 v2.0.0-20201230193248-ec8ca79ce9d4/go.mod h1:qm72/qFw9BX/ek63aZKyUKNg3uL5RaOuyAw9JP8ysZg=
 github.com/botherder/go-savetime v0.0.0-20201230153911-102454c6e533/go.mod h1:w8rKlqwexRgSmekdFAZVfenmaZKhXBIew2tDvuox2sI=
-github.com/botherder/go-savetime v1.0.1 h1:pK+0nJBwKKcn3XtXoEzAZsiHKl/pe9YiaR5karL5QqA=
-github.com/botherder/go-savetime v1.0.1/go.mod h1:w8rKlqwexRgSmekdFAZVfenmaZKhXBIew2tDvuox2sI=
 github.com/botherder/go-savetime v1.1.0 h1:vZOY63DG42j1gb8kChYJiqLmRlSV3qkSkh/pjZ5bJ0Q=
 github.com/botherder/go-savetime v1.1.0/go.mod h1:w8rKlqwexRgSmekdFAZVfenmaZKhXBIew2tDvuox2sI=
 github.com/capnspacehook/taskmaster v0.0.0-20201022195506-c2d8b114cec0 h1:Vk5MLtMNanZL7rfRRtxxD4XAfrEugOu168QJ3352FYc=

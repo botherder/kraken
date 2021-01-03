@@ -194,13 +194,13 @@ func init() {
 		// Register to the API server.
 		err := apiClient.Register()
 		if err != nil {
-			log.Error("API registration failed: ", err.Error())
+			log.Error("API registration failed: ", err)
 		}
 
 		// Try to send an heartbeat.
 		err = apiClient.Heartbeat()
 		if err != nil {
-			log.Error("Unable to send heartbeat to server: ", err.Error())
+			log.Error("Unable to send heartbeat to server: ", err)
 		}
 	}
 }
