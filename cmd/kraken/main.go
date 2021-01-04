@@ -36,17 +36,20 @@ import (
 )
 
 var (
+	// This is an instance of our API client.
 	apiClient *api.API
-	cfg       *config.Config
+	// This is our current configuration.
+	cfg *config.Config
 	// This is our Yara yaraScanner.
 	yaraScanner scanner.Scanner
+
 	// This is a flag to enable debug logging.
-	debug *bool
+	flagDebug *bool
 	// This is a flag to determine whether to execute as a permanent agent or not.
 	// In case this is false, we just scan active processes and exit.
-	daemon *bool
+	flagDaemon *bool
 	// This is a flag to enable remote reporting to API server.
-	report *bool
+	flagReport *bool
 	// This is a domain to the backend specified from command-line.
 	flagBaseDomain *string
 	// This is a folder to be scanned instead of the default.
@@ -62,9 +65,9 @@ var (
 )
 
 func initArguments() {
-	debug = flag.Bool("debug", false, "Enable debug logs")
-	report = flag.Bool("report", false, "Enable reporting of events to the backend")
-	daemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
+	flagDebug = flag.Bool("debug", false, "Enable debug logs")
+	flagReport = flag.Bool("report", false, "Enable reporting of events to the backend")
+	flagDaemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
 	flagBaseDomain = flag.String("backend", "", "Specify a particular hostname to the backend to connect to (overrides the default)")
 	flagScanFolder = flag.String("folder", "", "Specify a particular folder to be scanned (overrides the default full filesystem)")
 	flagRulesPath = flag.String("rules", "", "Specify a particular path to a file or folder containing the Yara rules to use")
@@ -75,8 +78,8 @@ func initArguments() {
 
 	// If we're running in daemon mode, we enable the report flag too.
 	// TODO: Need to review this choice. We might not necessarily want that.
-	if *daemon == true {
-		*report = true
+	if *flagDaemon == true {
+		*flagReport = true
 	}
 }
 
@@ -84,14 +87,14 @@ func initLogging() {
 	log.SetFormatter(&log.TextFormatter{ForceColors: true})
 	log.SetOutput(colorable.NewColorableStdout())
 
-	if *debug {
+	if *flagDebug {
 		log.SetLevel(log.DebugLevel)
 	}
 }
 
 func initStorage() {
 	// We create the folder only if we're running in daemon mode.
-	if *daemon == true {
+	if *flagDaemon == true {
 		// This should create storage.StorageBase and storage.StorageFiles.
 		if _, err := os.Stat(storage.StorageFiles); os.IsNotExist(err) {
 			os.MkdirAll(storage.StorageFiles, 0777)
@@ -184,7 +187,7 @@ func init() {
 	log.Debug("The agent is going to communicate to: ", cfg.BaseDomain)
 
 	// We register to the backend only if report is enabled.
-	if *report == true {
+	if *flagReport == true {
 		apiClient = api.New(cfg.BaseDomain, cfg.MachineID)
 
 		// Register to the API server.
@@ -244,7 +247,7 @@ func main() {
 
 	// If by command-line it was instructed to run in daemon mode, then
 	// we start the process watch.
-	if *daemon == true {
+	if *flagDaemon == true {
 		// Start process monitor.
 		go processWatch(pids)
 		// Start autoruns monitor.

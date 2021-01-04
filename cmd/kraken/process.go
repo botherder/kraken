@@ -75,7 +75,7 @@ func processScan(pid int32) (detections []*detection.Detection) {
 	// If we got to this point, then it means that the process executable has
 	// not been detected. We try now to scan the process memory.
 	// NOTE: This might be very prone to false positives. I should probably
-	//	   treat this differently.
+	//	     treat this differently.
 	log.Debug("Scanning memory of process with PID ", pid)
 	matches, _ := yaraScanner.ScanProc(int(pid))
 	for _, match := range matches {

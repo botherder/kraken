@@ -65,7 +65,7 @@ func autorunStoreInDatabase(autorun *autoruns.Autorun, wasReported bool) {
 func autorunScan(autorun *autoruns.Autorun) *detection.Detection {
 	// We want to report autorun records even if they were not detected as malicous.
 	wasReported := false
-	if *report == true {
+	if *flagReport == true {
 		client := api.New(cfg.BaseDomain, cfg.MachineID)
 		err := client.ReportAutorun(autorun)
 		if err != nil {
@@ -77,7 +77,7 @@ func autorunScan(autorun *autoruns.Autorun) *detection.Detection {
 	}
 
 	// We store data only if we run in daemon mode.
-	if *daemon == true {
+	if *flagDaemon == true {
 		// Store autorun in database if necessary.
 		autorunStoreInDatabase(autorun, wasReported)
 
