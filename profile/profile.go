@@ -17,28 +17,66 @@
 package profile
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"os"
 	"os/user"
 
 	"github.com/botherder/go-savetime/hashes"
+	"github.com/jaypipes/ghw"
 	"github.com/matishsiao/goInfo"
 )
 
-// For a machine ID we use a SHA1 of the first Mac address we find.
-// TODO: should rather use the disk serial number.
+// GetMachineID attempts to generate a serial number, first by trying to
+// get a disk serial number. If that fails, we use the network card.
 func GetMachineID() string {
-	ifaces, _ := net.Interfaces()
-	for _, iface := range ifaces {
-		mac := iface.HardwareAddr.String()
-		if len(mac) == 17 {
-			hash, _ := hashes.StringSHA1(mac)
-			return hash
-		}
+	serial, err := GetDiskSerialNumber()
+	if err == nil {
+		id, _ := hashes.StringSHA1(serial)
+		return id
+	}
+
+	mac, err := GetMacAddress()
+	if err == nil {
+		id, _ := hashes.StringSHA1(mac)
+		return id
 	}
 
 	return ""
+}
+
+// GetDiskSerialNumber returns the first
+func GetDiskSerialNumber() (string, error) {
+	block, err := ghw.Block()
+	if err != nil {
+		return "", err
+	}
+
+	for _, disk := range block.Disks {
+		if disk.SerialNumber == "unknown" {
+			continue
+		}
+
+		return disk.SerialNumber, nil
+	}
+
+	return "", errors.New("No available disk found")
+}
+
+// GetMacAddress returns the mac address of the first available network
+// interface.
+func GetMacAddress() (string, error) {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return "", err
+	}
+	for _, iface := range ifaces {
+		mac := iface.HardwareAddr.String()
+		return mac, nil
+	}
+
+	return "", errors.New("No available network interface found")
 }
 
 // Get current username.

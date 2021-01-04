@@ -5,12 +5,12 @@ go 1.14
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/Sirupsen/logrus v1.0.6
-	github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f // indirect
 	github.com/botherder/go-autoruns/v2 v2.0.0-20201230193248-ec8ca79ce9d4
 	github.com/botherder/go-savetime v1.1.0
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hillu/go-yara/v4 v4.0.3
+	github.com/jaypipes/ghw v0.6.1
 	github.com/magiconair/properties v1.8.0 // indirect
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
 	github.com/mattn/go-colorable v0.0.9
