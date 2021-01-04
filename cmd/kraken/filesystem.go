@@ -37,9 +37,9 @@ func fileDetected(filePath, signature string) *detection.Detection {
 
 func filesystemScan() (detections []*detection.Detection) {
 	var roots []string
-	if *customFileSystemRoot != "" {
-		log.Info("Scanning the specified folder ", *customFileSystemRoot)
-		roots = []string{*customFileSystemRoot}
+	if *flagScanFolder != "" {
+		log.Info("Scanning the specified folder ", *flagScanFolder)
+		roots = []string{*flagScanFolder}
 	} else {
 		log.Info("Scanning the filesystem (this can take several minutes)...")
 		roots = getFileSystemRoots()

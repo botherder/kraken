@@ -48,29 +48,29 @@ var (
 	// This is a flag to enable remote reporting to API server.
 	report *bool
 	// This is a domain to the backend specified from command-line.
-	customBaseDomain *string
+	flagBaseDomain *string
 	// This is a folder to be scanned instead of the default.
-	customFileSystemRoot *string
+	flagScanFolder *string
 	// This is a file or folder path containing the Yara rules to use.
-	customRulesPath *string
+	flagRulesPath *string
 	// This is a flag to disable process scanning.
-	noProcessScan *bool
+	flagNoProcessScan *bool
 	// This is a flag to disable autorun scanning.
-	noAutorunsScan *bool
+	flagNoAutorunsScan *bool
 	// This is a flag to disable filesystem scanning.
-	noFileSystemScan *bool
+	flagNoFilesystemScan *bool
 )
 
 func initArguments() {
 	debug = flag.Bool("debug", false, "Enable debug logs")
 	report = flag.Bool("report", false, "Enable reporting of events to the backend")
 	daemon = flag.Bool("daemon", false, "Enable daemon mode (this will also enable the report flag)")
-	customBaseDomain = flag.String("backend", "", "Specify a particular hostname to the backend to connect to (overrides the default)")
-	customFileSystemRoot = flag.String("folder", "", "Specify a particular folder to be scanned (overrides the default full filesystem)")
-	customRulesPath = flag.String("rules", "", "Specify a particular path to a file or folder containing the Yara rules to use")
-	noProcessScan = flag.Bool("no-process", false, "Disable scanning of running processes")
-	noAutorunsScan = flag.Bool("no-autoruns", false, "Disable scanning of autoruns")
-	noFileSystemScan = flag.Bool("no-filesystem", false, "Disable scanning of filesystem")
+	flagBaseDomain = flag.String("backend", "", "Specify a particular hostname to the backend to connect to (overrides the default)")
+	flagScanFolder = flag.String("folder", "", "Specify a particular folder to be scanned (overrides the default full filesystem)")
+	flagRulesPath = flag.String("rules", "", "Specify a particular path to a file or folder containing the Yara rules to use")
+	flagNoProcessScan = flag.Bool("no-process", false, "Disable scanning of running processes")
+	flagNoAutorunsScan = flag.Bool("no-autoruns", false, "Disable scanning of autoruns")
+	flagNoFilesystemScan = flag.Bool("no-filesystem", false, "Disable scanning of filesystem")
 	flag.Parse()
 
 	// If we're running in daemon mode, we enable the report flag too.
@@ -105,12 +105,12 @@ func initScanner() error {
 	var err error
 	yaraScanner = scanner.New()
 
-	// If a customRulesPath is specified, we compile those rules.
-	if *customRulesPath != "" {
-		yaraScanner.Rules, err = scanner.Compile(*customRulesPath)
+	// If a flagRulesPath is specified, we compile those rules.
+	if *flagRulesPath != "" {
+		yaraScanner.Rules, err = scanner.Compile(*flagRulesPath)
 		if err != nil {
 			yaraScanner.Available = false
-			return fmt.Errorf("Unable to compile custom Yara rules at path %s: %s", customRulesPath, err)
+			return fmt.Errorf("Unable to compile custom Yara rules at path %s: %s", flagRulesPath, err)
 		}
 
 		yaraScanner.Available = true
@@ -121,7 +121,7 @@ func initScanner() error {
 		return nil
 	}
 
-	// If no customRulesPath is specified, we try to locate a locally stored
+	// If no flagRulesPath is specified, we try to locate a locally stored
 	// compiled rules file.
 	localRulesPaths := []string{
 		filepath.Join(runtime.GetExecutableDirectory(), "rules"),
@@ -178,7 +178,7 @@ func init() {
 	// Initialize Yara yaraScanner.
 	initScanner()
 
-	cfg = config.New(*customBaseDomain, DefaultBaseDomain)
+	cfg = config.New(*flagBaseDomain, DefaultBaseDomain)
 
 	log.Debug("This machine is identified as ", cfg.MachineID)
 	log.Debug("The agent is going to communicate to: ", cfg.BaseDomain)
@@ -204,11 +204,11 @@ func init() {
 func main() {
 	// We store here the list of detections.
 	var detections []*detection.Detection
+
 	// Empty list of pids.
 	var pids []int32
-
 	// We do a first scan of running processes.
-	if *noProcessScan == false {
+	if !*flagNoProcessScan {
 		log.Info("Scanning running processes...")
 		pids, _ = process.Pids()
 		for _, pid := range pids {
@@ -217,7 +217,7 @@ func main() {
 	}
 
 	// We scan the running autoruns.
-	if *noAutorunsScan == false {
+	if !*flagNoAutorunsScan {
 		log.Info("Scanning autoruns...")
 		for _, autorun := range autoruns.GetAllAutoruns() {
 			detection := autorunScan(autorun)
@@ -228,7 +228,7 @@ func main() {
 	}
 
 	// Now we do a scan of the file system if required.
-	if *noFileSystemScan == false {
+	if !*flagNoFilesystemScan {
 		detections = append(detections, filesystemScan()...)
 	}
 
@@ -253,7 +253,6 @@ func main() {
 		heartbeatManager()
 	} else {
 		log.Info("Press Enter to finish ...")
-		var b = make([]byte, 1)
-		os.Stdin.Read(b)
+		fmt.Scanln()
 	}
 }
