@@ -19,7 +19,6 @@ package main
 import (
 	"os"
 	"path/filepath"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-autoruns/v2"
@@ -100,19 +99,4 @@ func autorunScan(autorun *autoruns.Autorun) *detection.Detection {
 	}
 
 	return nil
-}
-
-func autorunWatch() {
-	log.Info("Starting autoruns monitor...")
-
-	ticker := time.NewTicker(time.Minute * 30).C
-
-	for {
-		select {
-		case <-ticker:
-			for _, autorun := range autoruns.GetAllAutoruns() {
-				autorunScan(autorun)
-			}
-		}
-	}
 }

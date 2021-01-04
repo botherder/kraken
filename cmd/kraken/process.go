@@ -18,20 +18,19 @@ package main
 
 import (
 	"os"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/botherder/kraken/detection"
 	"github.com/shirou/gopsutil/process"
 )
 
-// This function should terminate processes on all platforms.
-func processTerminate(pid int32) bool {
-	proc, _ := process.NewProcess(pid)
-	err := proc.Terminate()
+// // This function should terminate processes on all platforms.
+// func processTerminate(pid int32) bool {
+// 	proc, _ := process.NewProcess(pid)
+// 	err := proc.Terminate()
 
-	return err == nil
-}
+// 	return err == nil
+// }
 
 func processDetected(pid int32, processName, processPath, signature string) *detection.Detection {
 	log.WithFields(log.Fields{
@@ -83,39 +82,4 @@ func processScan(pid int32) (detections []*detection.Detection) {
 	}
 
 	return detections
-}
-
-func processWatch(oldPids []int32) {
-	log.Info("Starting process monitor...")
-
-	for {
-		// Grab a list of pids.
-		pids, _ := process.Pids()
-
-		// Loop through the current pids.
-		for _, pid := range pids {
-			// Mark if the pid has been observed in the previous iteration.
-			var previouslySeen = false
-			// Loop through the pids from the previous iteration.
-			for _, oldPid := range oldPids {
-				// Check if the pid is already known.
-				if pid == oldPid {
-					previouslySeen = true
-				}
-			}
-
-			// If the current pid is not known from the previous iteration,
-			// then we launch a new scan goroutine.
-			if previouslySeen == false {
-				log.Info("New process to scan with PID ", pid)
-				go processScan(pid)
-			}
-		}
-
-		// Update the pids last iteration list.
-		oldPids = pids
-
-		// Zzz.
-		time.Sleep(time.Second)
-	}
 }
