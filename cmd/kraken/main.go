@@ -103,7 +103,7 @@ func initStorage() {
 }
 
 func initScanner() error {
-	log.Info("Loading Yara rules...")
+	log.Debug("Loading Yara rules...")
 
 	var err error
 	yaraScanner = scanner.New()
@@ -183,8 +183,9 @@ func init() {
 
 	cfg = config.New(*flagBaseDomain, DefaultBaseDomain)
 
-	log.Debug("This machine is identified as ", cfg.MachineID)
-	log.Debug("The agent is going to communicate to: ", cfg.BaseDomain)
+	log.Info("Kraken agent version: ", AgentVersion)
+	log.Info("This machine is identified as ", cfg.MachineID)
+	log.Info("The agent is going to communicate to: ", cfg.BaseDomain)
 
 	// We register to the backend only if report is enabled.
 	if *flagReport == true {

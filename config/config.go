@@ -43,7 +43,7 @@ func New(customBaseDomain, defaultBaseDomain string) *Config {
 	// Get folder and file name of standard config file.
 	fileName := filepath.Base(storage.StorageConfig)
 
-	log.Info("Looking for configuration file with name ", fileName)
+	log.Debug("Looking for configuration file with name ", fileName)
 
 	// Specify configuration file properties.
 	viper.SetConfigName(strings.Split(fileName, ".")[0])
@@ -54,7 +54,7 @@ func New(customBaseDomain, defaultBaseDomain string) *Config {
 	// Try to read the config file.
 	readError := viper.ReadInConfig()
 	if readError != nil {
-		log.Info("No configuration file found, generating a default one...")
+		log.Debug("No configuration file found, generating a default one...")
 	}
 
 	// Just in case there is no config file, we set defaults.

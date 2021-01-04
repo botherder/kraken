@@ -17,7 +17,7 @@
 package main
 
 // AgentVersion is the... current version of the agent.
-const AgentVersion = "1.0"
+var AgentVersion string
 
 // DefaultBaseDomain is the default domain name to the backend.
 // This is normally configured at build time through the Makefile.

@@ -6,6 +6,8 @@ FLAGS_FREEBSD = GOOS=freebsd GOARCH=amd64 CGO_ENABLED=1 CGO_CFLAGS="-g -O2 -Wno-
 FLAGS_WINDOWS_386 = GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-386/lib/pkgconfig/ CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
 FLAGS_WINDOWS_AMD64 = GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 PKG_CONFIG_PATH=$(CURDIR)/_non-golang/prefix-windows-amd64/lib/pkgconfig/ CGO_CFLAGS="-g -O2 -Wno-return-local-addr"
 
+AGENT_VERSION = $(shell git describe --tags)
+
 KRAKEN_SRC   = $(wildcard cmd/kraken/*.go)
 LAUNCHER_SRC = $(wildcard cmd/kraken-launcher/*.go)
 COMPILER_SRC = $(wildcard cmd/rules-compiler/*.go)
@@ -101,7 +103,7 @@ linux: check-env rules-compiler $(BUILD_FOLDER)/linux/kraken $(BUILD_FOLDER)/lin
 $(BUILD_FOLDER)/linux/kraken: $(KRAKEN_SRC)
 	@mkdir -p $(@D)
 	@echo "[builder] Building Linux executable..."
-	@cd cmd/kraken; $(FLAGS_LINUX) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
+	@cd cmd/kraken; $(FLAGS_LINUX) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND) -X main.AgentVersion=$(AGENT_VERSION)' \
 		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
@@ -121,7 +123,7 @@ darwin: check-env rules-compiler  $(BUILD_FOLDER)/darwin/kraken $(BUILD_FOLDER)/
 $(BUILD_FOLDER)/darwin/kraken: $(KRAKEN_SRC)
 	@mkdir -p $(@D)
 	@echo "[builder] Building Darwin executable..."
-	@cd cmd/kraken; $(FLAGS_DARWIN) go build --ldflags '-s -w -extldflags "-lm" -X main.DefaultBaseDomain=$(BACKEND)' \
+	@cd cmd/kraken; $(FLAGS_DARWIN) go build --ldflags '-s -w -extldflags "-lm" -X main.DefaultBaseDomain=$(BACKEND) -X main.AgentVersion=$(AGENT_VERSION)' \
 		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
@@ -141,7 +143,7 @@ freebsd: check-env rules-compiler  $(BUILD_FOLDER)/freebsd/kraken $(BUILD_FOLDER
 $(BUILD_FOLDER)/freebsd/kraken: $(KRAKEN_SRC)
 	@mkdir -p $(@D)
 	@echo "[builder] Building FreeBSD executable..."
-	@cd cmd/kraken; $(FLAGS_FREEBSD) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND)' \
+	@cd cmd/kraken; $(FLAGS_FREEBSD) go build --ldflags '-s -w -extldflags "-lm -static" -X main.DefaultBaseDomain=$(BACKEND) -X main.AgentVersion=$(AGENT_VERSION)' \
 		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
@@ -168,7 +170,7 @@ $(BUILD_FOLDER)/windows-386/kraken.exe: $(YARA_SRC)-windows-386/done $(KRAKEN_SR
 	@rsrc -arch 386 -manifest $(CURDIR)/data/windows/kraken.manifest -o $(BUILD_FOLDER)/rsrc_windows_386.syso
 
 	@echo "[builder] Building Windows 32bit executable..."
-	@cd cmd/kraken; $(FLAGS_WINDOWS_386) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
+	@cd cmd/kraken; $(FLAGS_WINDOWS_386) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND) -X main.AgentVersion=$(AGENT_VERSION)' \
 		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
@@ -188,7 +190,7 @@ $(BUILD_FOLDER)/windows-amd64/kraken.exe: $(YARA_SRC)-windows-amd64/done $(KRAKE
 	@rsrc -arch amd64 -manifest $(CURDIR)/data/windows/kraken.manifest -o $(BUILD_FOLDER)/rsrc_windows_amd64.syso
 
 	@echo "[builder] Building Windows 64bit executable..."
-	@cd cmd/kraken; $(FLAGS_WINDOWS_AMD64) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND)' \
+	@cd cmd/kraken; $(FLAGS_WINDOWS_AMD64) go build --ldflags '-s -w -extldflags "-static" -X main.DefaultBaseDomain=$(BACKEND) -X main.AgentVersion=$(AGENT_VERSION)' \
 		-tags yara_static -o $@
 	@echo "[builder] Done!"
 
