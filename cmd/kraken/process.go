@@ -82,7 +82,6 @@ func processScan(pid int32) (detections []*detection.Detection) {
 		detections = append(detections, processDetected(pid, procName, procExe, match.Rule))
 	}
 
-	// Nothing found for this process.
 	return detections
 }
 
