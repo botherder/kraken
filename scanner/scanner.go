@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -26,6 +26,11 @@ type Scanner struct {
 	Rules     *yara.Rules
 }
 
+// New returns a new Scanner instance.
+func New() Scanner {
+	return Scanner{}
+}
+
 // LoadRules uses Yara's LoadRules to load compiled rules from the specified
 // file path.
 func (s *Scanner) LoadRules(rulesPath string) error {
@@ -36,9 +41,4 @@ func (s *Scanner) LoadRules(rulesPath string) error {
 	}
 
 	return nil
-}
-
-// New returns a new Scanner instance.
-func New() Scanner {
-	return Scanner{}
 }

@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,36 +18,26 @@ package api
 
 import (
 	"fmt"
-
-	"github.com/botherder/kraken/config"
-	"github.com/go-resty/resty/v2"
 )
 
 type API struct {
-	Config config.Config
+	MachineID      string
+	BaseDomain     string
+	URLToRules     string
+	URLToRegister  string
+	URLToHeartbeat string
+	URLToDetection string
+	URLToAutorun   string
 }
 
-func New(cfg config.Config) *API {
-	return &API{Config: cfg}
-}
-
-// Sends an heartbeat to the API server.
-func (a *API) Heartbeat() error {
-	client := resty.New()
-	response, err := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(fmt.Sprintf(`{"identifier":"%s"}`, a.Config.MachineID)).
-		Post(a.Config.URLToHeartbeat)
-
-	// Check if request failed.
-	if err != nil {
-		return fmt.Errorf("Unable to send heartbeat to API server: %s", err)
+func New(baseDomain, machineID string) *API {
+	return &API{
+		MachineID:      machineID,
+		BaseDomain:     baseDomain,
+		URLToRules:     fmt.Sprintf("https://%s/rules", baseDomain),
+		URLToRegister:  fmt.Sprintf("https://%s/api/register/", baseDomain),
+		URLToHeartbeat: fmt.Sprintf("https://%s/api/heartbeat/", baseDomain),
+		URLToDetection: fmt.Sprintf("https://%s/api/detection/%s/", baseDomain, machineID),
+		URLToAutorun:   fmt.Sprintf("https://%s/api/autorun/%s/", baseDomain, machineID),
 	}
-
-	// Check if the response wasn't right.
-	if response.StatusCode() != 200 {
-		return fmt.Errorf("Unable to send heartbeat to API server: we received response code %d", response.StatusCode())
-	}
-
-	return nil
 }

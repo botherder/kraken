@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -24,6 +24,12 @@ import (
 	// log "github.com/Sirupsen/logrus"
 	"github.com/botherder/go-savetime/files"
 	"github.com/botherder/go-savetime/hashes"
+)
+
+const (
+	TypeAutorun    = "autorun"
+	TypeProcess    = "process"
+	TypeFilesystem = "filesystem"
 )
 
 // Detection contains the information to report a Yara detection.

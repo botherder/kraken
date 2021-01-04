@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ func processDetected(pid int32, processName, processPath, signature string) *det
 		"pid":     pid,
 	}).Warning("DETECTION! Malicious process detected as ", signature)
 
-	detection := detection.New("process", processPath, processName, signature, pid)
+	detection := detection.New(detection.TypeProcess, processPath, processName, signature, pid)
 	// detection.ReportAndStore()
 
 	return detection

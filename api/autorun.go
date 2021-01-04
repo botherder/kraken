@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ func (a *API) ReportAutorun(record *autoruns.Autorun) error {
 	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(record).
-		Post(a.Config.URLToAutorun)
+		Post(a.URLToAutorun)
 
 	// Check if the request failed.
 	if err != nil {

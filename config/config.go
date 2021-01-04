@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 package config
 
 import (
-	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -29,22 +28,15 @@ import (
 
 // Config contains all the information for reporting back.
 type Config struct {
-	MachineID      string
-	URLBaseDomain  string
-	URLToRules     string
-	URLToRegister  string
-	URLToHeartbeat string
-	URLToDetection string
-	URLToAutorun   string
+	MachineID  string
+	BaseDomain string
 }
 
 func New(customBaseDomain, defaultBaseDomain string) *Config {
 	var baseDomain string
 	if customBaseDomain != "" {
-		log.Debug("I was provided a custom backend: ", customBaseDomain)
 		baseDomain = customBaseDomain
 	} else {
-		log.Debug("I am going to use the default backend: ", defaultBaseDomain)
 		baseDomain = defaultBaseDomain
 	}
 
@@ -70,17 +62,12 @@ func New(customBaseDomain, defaultBaseDomain string) *Config {
 	viper.SetDefault("base_domain", baseDomain)
 
 	return &Config{
-		MachineID:      viper.GetString("machine_id"),
-		URLBaseDomain:  viper.GetString("base_domain"),
-		URLToRules:     fmt.Sprintf("https://%s/rules", viper.GetString("base_domain")),
-		URLToRegister:  fmt.Sprintf("https://%s/api/register/", viper.GetString("base_domain")),
-		URLToHeartbeat: fmt.Sprintf("https://%s/api/heartbeat/", viper.GetString("base_domain")),
-		URLToDetection: fmt.Sprintf("https://%s/api/detection/%s/", viper.GetString("base_domain"), viper.GetString("machine_id")),
-		URLToAutorun:   fmt.Sprintf("https://%s/api/autorun/%s/", viper.GetString("base_domain"), viper.GetString("machine_id")),
+		MachineID:  viper.GetString("machine_id"),
+		BaseDomain: viper.GetString("base_domain"),
 	}
 }
 
-func (c *Config) Write(configPath string) {
+func (c *Config) WriteToFile(configPath string) {
 	// err := viper.SafeWriteConfigAs(configPath)
 	err := viper.WriteConfigAs(configPath)
 	if err != nil {

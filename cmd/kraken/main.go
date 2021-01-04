@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -181,15 +181,11 @@ func init() {
 	cfg = config.New(*customBaseDomain, DefaultBaseDomain)
 
 	log.Debug("This machine is identified as ", cfg.MachineID)
-	log.Debug("URLBaseDomain: ", cfg.URLBaseDomain)
-	log.Debug("URLToRules: ", cfg.URLToRules)
-	log.Debug("URLToRegister: ", cfg.URLToRegister)
-	log.Debug("URLToDetection: ", cfg.URLToDetection)
-	log.Debug("URLToAutorun: ", cfg.URLToAutorun)
+	log.Debug("The agent is going to communicate to: ", cfg.BaseDomain)
 
 	// We register to the backend only if report is enabled.
 	if *report == true {
-		apiClient = api.New(*cfg)
+		apiClient = api.New(cfg.BaseDomain, cfg.MachineID)
 
 		// Register to the API server.
 		err := apiClient.Register()
@@ -233,7 +229,6 @@ func main() {
 
 	// Now we do a scan of the file system if required.
 	if *noFileSystemScan == false {
-		log.Info("Scanning the filesystem (this can take several minutes)...")
 		detections = append(detections, filesystemScan()...)
 	}
 

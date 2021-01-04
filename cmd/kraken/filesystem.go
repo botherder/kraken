@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ func fileDetected(filePath, signature string) *detection.Detection {
 		"file": filePath,
 	}).Warning("DETECTION! Malicious file detected as ", signature)
 
-	detection := detection.New("filesystem", filePath, "", signature, 0)
+	detection := detection.New(detection.TypeFilesystem, filePath, "", signature, 0)
 	// detection.ReportAndStore()
 
 	return detection
@@ -37,10 +37,12 @@ func fileDetected(filePath, signature string) *detection.Detection {
 
 func filesystemScan() (detections []*detection.Detection) {
 	var roots []string
-	if *customFileSystemRoot == "" {
-		roots = getFileSystemRoots()
-	} else {
+	if *customFileSystemRoot != "" {
+		log.Info("Scanning the specified folder ", *customFileSystemRoot)
 		roots = []string{*customFileSystemRoot}
+	} else {
+		log.Info("Scanning the filesystem (this can take several minutes)...")
+		roots = getFileSystemRoots()
 	}
 
 	for _, root := range roots {

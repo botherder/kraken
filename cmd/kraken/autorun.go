@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ func autorunDetected(autorun *autoruns.Autorun, signature string) *detection.Det
 		"image_path": autorun.ImagePath,
 	}).Warning("DETECTION! Malicious autorun detected as ", signature)
 
-	detection := detection.New("autorun", autorun.ImagePath, autorun.ImageName, signature, 0)
+	detection := detection.New(detection.TypeAutorun, autorun.ImagePath, autorun.ImageName, signature, 0)
 
 	return detection
 }
@@ -66,7 +66,7 @@ func autorunScan(autorun *autoruns.Autorun) *detection.Detection {
 	// We want to report autorun records even if they were not detected as malicous.
 	wasReported := false
 	if *report == true {
-		client := api.New(*cfg)
+		client := api.New(cfg.BaseDomain, cfg.MachineID)
 		err := client.ReportAutorun(autorun)
 		if err != nil {
 			log.Error("Failed to report autorun record: ", err)

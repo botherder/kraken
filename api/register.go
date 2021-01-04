@@ -1,4 +1,4 @@
-// Kraken
+// This file is part of Kraken (https://github.com/botherder/kraken)
 // Copyright (C) 2016-2021  Claudio Guarnieri
 //
 // This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ type Registration struct {
 // Register to the API server.
 func (a *API) Register() error {
 	registration := Registration{
-		Identifier:      a.Config.MachineID,
+		Identifier:      a.MachineID,
 		UserName:        profile.GetUsername(),
 		ComputerName:    profile.GetComputerName(),
 		OperatingSystem: profile.GetOperatingSystem(),
@@ -45,7 +45,7 @@ func (a *API) Register() error {
 	response, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(registration).
-		Post(a.Config.URLToRegister)
+		Post(a.URLToRegister)
 
 	// Check if request failed.
 	if err != nil {
