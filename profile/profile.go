@@ -46,7 +46,7 @@ func GetMachineID() string {
 	return ""
 }
 
-// GetDiskSerialNumber returns the first
+// GetDiskSerialNumber returns the serial number of the first available disk.
 func GetDiskSerialNumber() (string, error) {
 	block, err := ghw.Block()
 	if err != nil {
